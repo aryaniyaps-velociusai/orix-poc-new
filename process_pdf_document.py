@@ -21,7 +21,6 @@ import time
 from logging import Logger
 from utils.logger_util import setup_logger
 from utils.m_graph import MGraphUtil
-from utils.calculate_confidence_score import update_confidence_score_with_coordinates
 
 
 
