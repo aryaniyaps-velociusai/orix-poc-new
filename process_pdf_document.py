@@ -9,7 +9,7 @@ import fitz
 from services.response_formatter import format_os_response
 from utils.calculate_totals import calculate_totals
 from utils.common import get_filename_without_extension, create_subfolders
-from utils.prompt import get_user_prompt, get_balance_sheet_user_prompt, get_income_statement_user_prompt
+from utils.prompt import get_balance_sheet_user_prompt, get_income_statement_user_prompt
 from utils.cosmos_db_op import update_item
 from utils.decorators import log_execution_time, log_execution_time_async
 from utils.helpers import clear_folder
@@ -222,33 +222,39 @@ async def process_pdf_document(pdf_path, task):
         print(e)
         raise
         return '', [], [], [], {}
-    # finally:
+    finally:
 
-    #     access_token = os.getenv('GRAPH_API_ACCESS_TOKEN')
-    #     folder_path_list = []
-    #     # try:
-    #     mgu = MGraphUtil(SHAREPOINT_LOGS_FOLDER_PATH)
-    #     onedrive_folder_graph_url = await mgu.get_drive_path(mgu.onedrive_url, token=access_token)
+        try:
 
-    #     if onedrive_folder_graph_url and os.path.exists(log_path):
-    #         await mgu.upload_to_onedrive(onedrive_folder_graph_url, pdf_filename_without_extension, log_path, token=access_token)
-    #         folder_path_list.append(os.path.dirname(log_path))
-        
-    #     if onedrive_folder_graph_url and os.path.exists(excel_output_path):
-    #         await mgu.upload_to_onedrive(onedrive_folder_graph_url, pdf_filename_without_extension, excel_output_path, token=access_token)
-    #         folder_path_list.append(os.path.dirname(excel_output_path))
-        
-    #     if onedrive_folder_graph_url and os.path.exists(ocr_response_text_path):
-    #         await mgu.upload_to_onedrive(onedrive_folder_graph_url, pdf_filename_without_extension, ocr_response_text_path, token=access_token)
-    #         folder_path_list.append(os.path.dirname(ocr_response_text_path))
-        
-    #     if onedrive_folder_graph_url and os.path.exists(azure_ocr_json_response_path):
-    #         await mgu.upload_to_onedrive(onedrive_folder_graph_url, pdf_filename_without_extension, azure_ocr_json_response_path, token=access_token)
-    #         folder_path_list.append(os.path.dirname(azure_ocr_json_response_path))
-        
-    #     if onedrive_folder_graph_url and os.path.exists(json_response_path):
-    #         await mgu.upload_to_onedrive(onedrive_folder_graph_url, pdf_filename_without_extension, json_response_path, token=access_token)
-    #         folder_path_list.append(os.path.dirname(json_response_path))
+            access_token = os.getenv('GRAPH_API_ACCESS_TOKEN')
+            folder_path_list = []
+            # try:
+            mgu = MGraphUtil(SHAREPOINT_LOGS_FOLDER_PATH)
+            onedrive_folder_graph_url = await mgu.get_drive_path(mgu.onedrive_url, token=access_token)
+
+            if onedrive_folder_graph_url and os.path.exists(log_path):
+                await mgu.upload_to_onedrive(onedrive_folder_graph_url, pdf_filename_without_extension, log_path, token=access_token)
+                folder_path_list.append(os.path.dirname(log_path))
+            
+            if onedrive_folder_graph_url and os.path.exists(excel_output_path):
+                await mgu.upload_to_onedrive(onedrive_folder_graph_url, pdf_filename_without_extension, excel_output_path, token=access_token)
+                folder_path_list.append(os.path.dirname(excel_output_path))
+            
+            if onedrive_folder_graph_url and os.path.exists(ocr_response_text_path):
+                await mgu.upload_to_onedrive(onedrive_folder_graph_url, pdf_filename_without_extension, ocr_response_text_path, token=access_token)
+                folder_path_list.append(os.path.dirname(ocr_response_text_path))
+            
+            if onedrive_folder_graph_url and os.path.exists(azure_ocr_json_response_path):
+                await mgu.upload_to_onedrive(onedrive_folder_graph_url, pdf_filename_without_extension, azure_ocr_json_response_path, token=access_token)
+                folder_path_list.append(os.path.dirname(azure_ocr_json_response_path))
+            
+            if onedrive_folder_graph_url and os.path.exists(json_response_path):
+                await mgu.upload_to_onedrive(onedrive_folder_graph_url, pdf_filename_without_extension, json_response_path, token=access_token)
+                folder_path_list.append(os.path.dirname(json_response_path))
+        except Exception as e:
+            print("**************"*10)
+            print("Error occured while pushing files to sharepoint")
+            print("**************"*10)
         
 
         # finally:
