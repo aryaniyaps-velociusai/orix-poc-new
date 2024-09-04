@@ -12,7 +12,7 @@ import time
 
 app = FastAPI(
     title="Orix Operating Statement POC API",
-    version="0.1.1"
+    version="0.1.2"
 )
 
 app.add_middleware(
