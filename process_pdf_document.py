@@ -64,6 +64,8 @@ async def process_pdf_document(pdf_path, task):
 
         pickle_file_path = f'azure_pickles/{pdf_filename_without_extension}.pickle'
 
+        create_subfolders(pickle_file_path)
+
 
         if not os.path.exists(output_folder_path):
             os.makedirs(output_folder_path)
