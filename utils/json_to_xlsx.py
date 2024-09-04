@@ -1,5 +1,6 @@
 import logging
 from openpyxl import load_workbook
+from utils.common import create_subfolders
 import time
 
 logger = logging.getLogger('orix-poc-logger')
@@ -167,7 +168,8 @@ def json_to_xlsx(data_json, template_path, pdf_filename_without_extension, times
     populate_sheet(income_statement_sheet, {**operating_statement_excel_field_mapping['income_statement']['revenue_income'], **operating_statement_excel_field_mapping['income_statement']['expenses']},
                   {**data_json['income_statement']['revenue_income'], **data_json['income_statement']['expenses']})
 
-  output_path = f'excel_output/excel_output_{int(time.time())}_{pdf_filename_without_extension}.xlsx'
-  workbook.save(output_path)
+  excel_output_path = f'excel_output/excel_output_{int(time.time())}_{pdf_filename_without_extension}.xlsx'
+  create_subfolders(excel_output_path)
+  workbook.save(excel_output_path)
 
-  return output_path
+  return excel_output_path
