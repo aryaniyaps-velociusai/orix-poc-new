@@ -76,3 +76,8 @@ jobs:
         shell: pwsh
         run: |
           az webapp config set --resource-group "${{ env.RESOURCEGROUP }}" --name "${{ env.APPNAME }}" --generic-configurations '{"acrUseManagedIdentityCreds": "true"}'
+
+      - name: Restart Azure Function App
+        shell: pwsh
+        run: |
+          az webapp restart --resource-group "${{ env.RESOURCEGROUP }}" --name "${{ env.APPNAME }}"
