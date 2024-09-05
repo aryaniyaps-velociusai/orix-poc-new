@@ -155,7 +155,10 @@ def get_balance_sheet_user_prompt(extracted_text):
                - ** Each CoA can have multiple fields mapped to it
                - ** Output for each CoA is a list of fields in format ["field_label", "field_value", "pdf_document_page_number"]
                     - "field_label" is the label of the field
-                    - "field_value" is the value of the field which is a decimal value
+                    - "field_value" is the value of the field which is a decimal value without any comma
+                        - remove comma ',' from "field_value" if present
+                            - E.g. 72,598.08 will be 72598.08
+                            - E.g. -15,786.78 will be -15786.78
                     - "pdf_document_page_number" is an integer value
                     - If any field is not mapped to any COA then output is an empty array
                - ** pdf_document_page_number is a number present in the format "<!-- PdfDocumentPageNumber 7 -->" at the begining of each page
