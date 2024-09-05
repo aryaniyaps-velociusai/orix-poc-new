@@ -43,8 +43,10 @@ async def process_pdf_document(pdf_path, task):
     timestamp = int(time.time())
     ocr_response_text_path = f'textract_response_output/layout_text_response_{pdf_filename_without_extension}.txt'
     json_response_path = f"json_response_folder/json_response_{pdf_filename_without_extension}_{timestamp}.json"
+    formatted_json_response_path = f"formatted_json_response_folder/formatted_json_response_{pdf_filename_without_extension}_{timestamp}.json"
     azure_ocr_json_response_path = f"azure_ocr_json_response_folder/azure_ocr_json_response_{pdf_filename_without_extension}_{timestamp}.json"
     create_subfolders(json_response_path)
+    create_subfolders(formatted_json_response_path)
     create_subfolders(ocr_response_text_path)
     create_subfolders(azure_ocr_json_response_path)
 
@@ -158,6 +160,9 @@ async def process_pdf_document(pdf_path, task):
 
         formatted_json_response = format_os_response(json_response)
 
+        with open(formatted_json_response_path, "w") as file:
+            file.write(json.dumps(formatted_json_response, indent=2))
+
         final_json_response = calculate_totals(formatted_json_response)
 
 
@@ -252,6 +257,10 @@ async def process_pdf_document(pdf_path, task):
             if onedrive_folder_graph_url and os.path.exists(json_response_path):
                 await mgu.upload_to_onedrive(onedrive_folder_graph_url, pdf_filename_without_extension, json_response_path, token=access_token)
                 folder_path_list.append(os.path.dirname(json_response_path))
+
+            if onedrive_folder_graph_url and os.path.exists(formatted_json_response_path):
+                await mgu.upload_to_onedrive(onedrive_folder_graph_url, pdf_filename_without_extension, formatted_json_response_path, token=access_token)
+                folder_path_list.append(os.path.dirname(formatted_json_response_path))
         except Exception as e:
             print("**************"*10)
             print("Error occured while pushing files to sharepoint")
