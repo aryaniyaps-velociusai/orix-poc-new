@@ -436,12 +436,13 @@ def get_balance_sheet_user_prompt(extracted_text):
                     - Incentive Management Fee
                     - Interest Rate Swap Agreement
                     - Investor Servicing Fee
-                    - Other Long Term Liabilities
                     - Other Partnership Fees 
                     - Partnership Management Fee
                     - Subordinate Management Fees
                     - Supervisory Management Fees 
                     - Supplemental Management Fees                                
+                    - Other Long Term Liabilities
+                        - Liabilities that could not be mapped to other CoA
                 
                 - Limited Partners' Equity/(Deficiency)
                 - Other Partners' Equity/(Deficiency)
