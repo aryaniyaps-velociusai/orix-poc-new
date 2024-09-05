@@ -168,7 +168,7 @@ def json_to_xlsx(data_json, template_path, pdf_filename_without_extension, times
     populate_sheet(income_statement_sheet, {**operating_statement_excel_field_mapping['income_statement']['revenue_income'], **operating_statement_excel_field_mapping['income_statement']['expenses']},
                   {**data_json['income_statement']['revenue_income'], **data_json['income_statement']['expenses']})
 
-  excel_output_path = f'excel_output/excel_output_{int(time.time())}_{pdf_filename_without_extension}.xlsx'
+  excel_output_path = f'excel_output/excel_output_{timestamp}_{pdf_filename_without_extension}.xlsx'
   create_subfolders(excel_output_path)
   workbook.save(excel_output_path)
 
