@@ -157,27 +157,29 @@ async def process_pdf_document(pdf_path, task):
         logger.info("Income Statement Extracted.")
         logger.info(json.dumps(income_statement_json_response, indent=2))
 
+        # 
+
 
         formatted_json_response = format_os_response(json_response)
 
         with open(formatted_json_response_path, "w") as file:
             file.write(json.dumps(formatted_json_response, indent=2))
+        
+        
+        # formatted_json_response = None
+        # with open('formatted_json_response_folder/formatted_json_response_107311---DPO---Operating-Statements---9-30-2023---THE-TERRACE-OF-HAMMOND-PHASE-I_1725860900.json', "r") as file:
+        #     formatted_json_response = json.load(file)
 
         final_json_response = calculate_totals(formatted_json_response)
-
-
-
-
-
-        
-
 
         with open(json_response_path, "w") as file:
             file.write(json.dumps(final_json_response, indent=2))
 
-        excel_output_path = json_to_xlsx(final_json_response,
-                                                                                                'excel_output_template.xlsx',
-                                                                                                pdf_filename_without_extension, timestamp)
+        excel_output_path = json_to_xlsx(final_json_response, 'excel_output_template.xlsx', pdf_filename_without_extension, timestamp)
+
+
+
+        # calculate_confidence_score_with_confidence(final_json_response, azure_ocr_json_response)
 
         
         task["progress"].append(
