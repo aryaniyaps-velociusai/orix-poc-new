@@ -92,134 +92,52 @@ def calculate_confidence_score_and_net_polygon_value(words, value, azure_ocr_out
         print('error occured in', calculate_confidence_score_and_net_polygon_value.__name__)
         raise e
 
+def update_categories_with_confidence_score_and_coordinates(document, azure_ocr_output, category, subcategory):
+    try:
+        for key,value in document[category][subcategory].items():
+            if len(value["fields"]) > 0:
+                fields_coordinate_list = []
+                fields_confidence_score_list = []
+                for field_index in range(len(value["fields"])):
+                    field_name = value["fields"][field_index]["field_name"]
+                    field_value = str(value["fields"][field_index]["value"])
+                    if len(field_value) > 0 and len(field_name) > 0:
+                        field_name_words = field_name.split()
+                        field_value_words = field_value.split()
+                        field_name_confidence_score, field_name_net_polygon_value, page_width, page_height = calculate_confidence_score_and_net_polygon_value(field_name_words, field_name, azure_ocr_output, value["fields"][field_index]["page_number"])
+                        field_value_confidence_score, field_value_net_polygon_value, page_width, page_height = calculate_confidence_score_and_net_polygon_value(field_value_words, field_value, azure_ocr_output, value["fields"][field_index]["page_number"])
+                        document[category][subcategory][key]["fields"][field_index] = {
+                            "field_name": field_name,
+                            "value": field_value,
+                            "page_number": value["fields"][field_index]["page_number"],
+                            "field_name_confidence_score": round(field_name_confidence_score, 4),
+                            "field_value_confidence_score": round(field_value_confidence_score,4),
+                            "field_name_coordinates_list": field_name_net_polygon_value,
+                            "field_value_coordinates_list": field_value_net_polygon_value
+                        }
+                        fields_coordinate_list.append(field_name_net_polygon_value)
+                        fields_coordinate_list.append(field_value_net_polygon_value)
+                        fields_confidence_score_list.append(field_name_confidence_score)
+                        fields_confidence_score_list.append(field_value_confidence_score)
+                document[category][subcategory][key]["page_dimensions"] = {
+                            "width": page_width,
+                            "height": page_height
+                        }
+                document[category][subcategory][key]["confidence_score"] = sum(fields_confidence_score_list)/len(fields_confidence_score_list)
+                document[category][subcategory][key]["coordinates_list"] = fields_coordinate_list
+        return document
+    except Exception as e:
+        print(f'Error occured in : {update_categories_with_confidence_score_and_coordinates.__name__}', e)
+        raise e
 
 def update_confidence_score_with_coordinates(document, azure_ocr_output):
     try:
-        for key,value in document["balance_sheet"]["assets"].items():
-            if len(value["fields"]) > 0:
-                fields_coordinate_list = []
-                fields_confidence_score_list = []
-                for field_index in range(len(value["fields"])):
-                    field_name = value["fields"][field_index]["field_name"]
-                    field_value = value["fields"][field_index]["value"]
-                    if len(field_value) > 0 and len(field_name) > 0:
-                        field_name_words = field_name.split()
-                        field_value_words = field_value.split()
-                        field_name_confidence_score, field_name_net_polygon_value, page_width, page_height = calculate_confidence_score_and_net_polygon_value(field_name_words, field_name, azure_ocr_output, value["fields"][field_index]["page_number"])
-                        field_value_confidence_score, field_value_net_polygon_value, page_width, page_height = calculate_confidence_score_and_net_polygon_value(field_value_words, field_value, azure_ocr_output, value["fields"][field_index]["page_number"])
-                        document["balance_sheet"]["assets"][key]["fields"][field_index] = {
-                            "field_name": field_name,
-                            "value": field_value,
-                            "page_number": value["fields"][field_index]["page_number"],
-                            "field_name_confidence_score": round(field_name_confidence_score, 4),
-                            "field_value_confidence_score": round(field_value_confidence_score,4),
-                            "field_name_coordinates_list": field_name_net_polygon_value,
-                            "field_value_coordinates_list": field_value_net_polygon_value
-                        }
-                        fields_coordinate_list.append(field_name_net_polygon_value)
-                        fields_coordinate_list.append(field_value_net_polygon_value)
-                        fields_confidence_score_list.append(field_name_confidence_score)
-                        fields_confidence_score_list.append(field_value_confidence_score)
-                document["balance_sheet"]["assets"][key]["page_dimensions"] = {
-                            "width": page_width,
-                            "height": page_height
-                        }
-                document["balance_sheet"]["assets"][key]["confidence_score"] = sum(fields_confidence_score_list)/len(fields_confidence_score_list)
-                document["balance_sheet"]["assets"][key]["coordinates_list"] = fields_coordinate_list
-        for key,value in document["balance_sheet"]["liabilities"].items():
-            if len(value["fields"]) > 0:
-                fields_coordinate_list = []
-                fields_confidence_score_list = []
-                for field_index in range(len(value["fields"])):
-                    field_name = value["fields"][field_index]["field_name"]
-                    field_value = value["fields"][field_index]["value"]
-                    if len(field_value) > 0 and len(field_name) > 0:
-                        field_name_words = field_name.split()
-                        field_value_words = field_value.split()
-                        field_name_confidence_score, field_name_net_polygon_value, page_width, page_height = calculate_confidence_score_and_net_polygon_value(field_name_words, field_name, azure_ocr_output, value["fields"][field_index]["page_number"])
-                        field_value_confidence_score, field_value_net_polygon_value, page_width, page_height = calculate_confidence_score_and_net_polygon_value(field_value_words, field_value, azure_ocr_output, value["fields"][field_index]["page_number"])
-                        document["balance_sheet"]["liabilities"][key]["fields"][field_index] = {
-                            "field_name": field_name,
-                            "value": field_value,
-                            "page_number": value["fields"][field_index]["page_number"],
-                            "field_name_confidence_score": round(field_name_confidence_score, 4),
-                            "field_value_confidence_score": round(field_value_confidence_score,4),
-                            "field_name_coordinates_list": field_name_net_polygon_value,
-                            "field_value_coordinates_list": field_value_net_polygon_value
-                        }
-                        fields_coordinate_list.append(field_name_net_polygon_value)
-                        fields_coordinate_list.append(field_value_net_polygon_value)
-                        fields_confidence_score_list.append(field_name_confidence_score)
-                        fields_confidence_score_list.append(field_value_confidence_score)
-                document["balance_sheet"]["liabilities"][key]["page_dimensions"] = {
-                            "width": page_width,
-                            "height": page_height
-                        }
-                document["balance_sheet"]["liabilities"][key]["confidence_score"] = sum(fields_confidence_score_list)/len(fields_confidence_score_list)
-                document["balance_sheet"]["liabilities"][key]["coordinates_list"] = fields_coordinate_list
+        document = update_categories_with_confidence_score_and_coordinates(document, azure_ocr_output, "balance_sheet", "assets")
+        document = update_categories_with_confidence_score_and_coordinates(document, azure_ocr_output, "balance_sheet", "liabilities")
 
-        for key,value in document["income_statement"]["revenue_income"].items():
-            if len(value["fields"]) > 0:
-                fields_coordinate_list = []
-                fields_confidence_score_list = []
-                for field_index in range(len(value["fields"])):
-                    field_name = value["fields"][field_index]["field_name"]
-                    field_value = value["fields"][field_index]["value"]
-                    if len(field_value) > 0 and len(field_name) > 0:
-                        field_name_words = field_name.split()
-                        field_value_words = field_value.split()
-                        field_name_confidence_score, field_name_net_polygon_value, page_width, page_height = calculate_confidence_score_and_net_polygon_value(field_name_words, field_name, azure_ocr_output, value["fields"][field_index]["page_number"])
-                        field_value_confidence_score, field_value_net_polygon_value, page_width, page_height = calculate_confidence_score_and_net_polygon_value(field_value_words, field_value, azure_ocr_output, value["fields"][field_index]["page_number"])
-                        document["income_statement"]["revenue_income"][key]["fields"][field_index] = {
-                            "field_name": field_name,
-                            "value": field_value,
-                            "page_number": value["fields"][field_index]["page_number"],
-                            "field_name_confidence_score": round(field_name_confidence_score, 4),
-                            "field_value_confidence_score": round(field_value_confidence_score,4),
-                            "field_name_coordinates_list": field_name_net_polygon_value,
-                            "field_value_coordinates_list": field_value_net_polygon_value
-                        }
-                        fields_coordinate_list.append(field_name_net_polygon_value)
-                        fields_coordinate_list.append(field_value_net_polygon_value)
-                        fields_confidence_score_list.append(field_name_confidence_score)
-                        fields_confidence_score_list.append(field_value_confidence_score)
-                document["income_statement"]["revenue_income"][key]["page_dimensions"] = {
-                            "width": page_width,
-                            "height": page_height
-                        }
-                document["income_statement"]["revenue_income"][key]["confidence_score"] = sum(fields_confidence_score_list)/len(fields_confidence_score_list)
-                document["income_statement"]["revenue_income"][key]["coordinates_list"] = fields_coordinate_list
-        for key,value in document["income_statement"]["expenses"].items():
-            if len(value["fields"]) > 0:
-                fields_coordinate_list = []
-                fields_confidence_score_list = []
-                for field_index in range(len(value["fields"])):
-                    field_name = value["fields"][field_index]["field_name"]
-                    field_value = value["fields"][field_index]["value"]
-                    if len(field_value) > 0 and len(field_name) > 0:
-                        field_name_words = field_name.split()
-                        field_value_words = field_value.split()
-                        field_name_confidence_score, field_name_net_polygon_value, page_width, page_height = calculate_confidence_score_and_net_polygon_value(field_name_words, field_name, azure_ocr_output, value["fields"][field_index]["page_number"])
-                        field_value_confidence_score, field_value_net_polygon_value, page_width, page_height = calculate_confidence_score_and_net_polygon_value(field_value_words, field_value, azure_ocr_output, value["fields"][field_index]["page_number"])
-                        document["income_statement"]["expenses"][key]["fields"][field_index] = {
-                            "field_name": field_name,
-                            "value": field_value,
-                            "page_number": value["fields"][field_index]["page_number"],
-                            "field_name_confidence_score": round(field_name_confidence_score, 4),
-                            "field_value_confidence_score": round(field_value_confidence_score,4),
-                            "field_name_coordinates_list": field_name_net_polygon_value,
-                            "field_value_coordinates_list": field_value_net_polygon_value
-                        }
-                        fields_coordinate_list.append(field_name_net_polygon_value)
-                        fields_coordinate_list.append(field_value_net_polygon_value)
-                        fields_confidence_score_list.append(field_name_confidence_score)
-                        fields_confidence_score_list.append(field_value_confidence_score)
-                document["income_statement"]["expenses"][key]["page_dimensions"] = {
-                            "width": page_width,
-                            "height": page_height
-                        }
-                document["income_statement"]["expenses"][key]["confidence_score"] = sum(fields_confidence_score_list)/len(fields_confidence_score_list)
-                document["income_statement"]["expenses"][key]["coordinates_list"] = fields_coordinate_list
+        document = update_categories_with_confidence_score_and_coordinates(document, azure_ocr_output, "income_statement", "revenue_income")
+        document = update_categories_with_confidence_score_and_coordinates(document, azure_ocr_output, "income_statement", "expenses")
+       
         return document
     except Exception as e:
         print('error occured in', update_confidence_score_with_coordinates.__name__)
