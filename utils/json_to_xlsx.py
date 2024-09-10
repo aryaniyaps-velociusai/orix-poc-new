@@ -1,5 +1,5 @@
 import logging
-from openpyxl import load_workbook
+from openpyxl import load_workbook, styles
 from utils.common import create_subfolders
 import time
 
@@ -144,32 +144,47 @@ operating_statement_excel_field_mapping = {
 
 
 def populate_sheet(sheet, field_mapping, data_values):
-    for row in sheet.iter_rows(min_row=1, max_col=2, values_only=False):
-        field_label = row[0].value
-        for key, excel_label in field_mapping.items():
-            if field_label == excel_label and key in data_values:
-                # print(data_values[key])
-                # if isinstance(data_values[key], dict):
-                #     field_sum = data_values[key]["total"]
-                # else:
-                    # field_sum = data_values[key]
-                field_sum = data_values[key]["total"]
-                row[1].value = field_sum
+    try:
+       
+        for row in sheet.iter_rows(min_row=1, max_col=3, values_only=False):
+            field_label = row[0].value
+            for key, excel_label in field_mapping.items():
+                if field_label == excel_label and key in data_values:
+                    # print(data_values[key])
+                    # if isinstance(data_values[key], dict):
+                    #     field_sum = data_values[key]["total"]
+                    # else:
+                        # field_sum = data_values[key]
+                    field_sum = data_values[key]["total"]
+                    row[1].value = field_sum
+                    formatted_comment = ""
+                    formatted_comment = "\n".join([f'{field["field_name"]} : {field["value"]},  Page-{field["page_number"]}' for field in data_values[key]["fields"]])
+                    row[2].value = formatted_comment
+                    row[2].alignment = styles.Alignment(wrap_text=True)
+                    if len(data_values[key]["fields"]) > 1:
+                        sheet.row_dimensions[row[0].row].height = len(data_values[key]["fields"]) * 17
+    except Exception as e:
+       print(f'Error occured in {populate_sheet.__name__}', e)
+       raise e    
 
 
 def json_to_xlsx(data_json, template_path, pdf_filename_without_extension, timestamp):
-  workbook = load_workbook(template_path)
-  balance_sheet_sheet = workbook['Balance Sheet']
-  income_statement_sheet = workbook['Income Statement']
-  if data_json.get("is_balance_sheet_present", "No") == "Yes":
-    populate_sheet(balance_sheet_sheet, {**operating_statement_excel_field_mapping['balance_sheet']['assets'], **operating_statement_excel_field_mapping['balance_sheet']['liabilities']}, 
-                  {**data_json['balance_sheet']['assets'], **data_json['balance_sheet']['liabilities']})
-  if data_json.get("is_income_statement_present", "No") == "Yes":
-    populate_sheet(income_statement_sheet, {**operating_statement_excel_field_mapping['income_statement']['revenue_income'], **operating_statement_excel_field_mapping['income_statement']['expenses']},
-                  {**data_json['income_statement']['revenue_income'], **data_json['income_statement']['expenses']})
+  try:
+    workbook = load_workbook(template_path)
+    balance_sheet_sheet = workbook['Balance Sheet']
+    income_statement_sheet = workbook['Income Statement']
+    if data_json.get("is_balance_sheet_present", "No") == "Yes":
+        populate_sheet(balance_sheet_sheet, {**operating_statement_excel_field_mapping['balance_sheet']['assets'], **operating_statement_excel_field_mapping['balance_sheet']['liabilities']}, 
+                    {**data_json['balance_sheet']['assets'], **data_json['balance_sheet']['liabilities']})
+    if data_json.get("is_income_statement_present", "No") == "Yes":
+        populate_sheet(income_statement_sheet, {**operating_statement_excel_field_mapping['income_statement']['revenue_income'], **operating_statement_excel_field_mapping['income_statement']['expenses']},
+                    {**data_json['income_statement']['revenue_income'], **data_json['income_statement']['expenses']})
 
-  excel_output_path = f'excel_output/excel_output_{timestamp}_{pdf_filename_without_extension}.xlsx'
-  create_subfolders(excel_output_path)
-  workbook.save(excel_output_path)
+    excel_output_path = f'excel_output/excel_output_{timestamp}_{pdf_filename_without_extension}.xlsx'
+    create_subfolders(excel_output_path)
+    workbook.save(excel_output_path)
 
-  return excel_output_path
+    return excel_output_path
+  
+  except Exception as e:
+      print(f'Error occured in : {json_to_xlsx.__name__}', e)
