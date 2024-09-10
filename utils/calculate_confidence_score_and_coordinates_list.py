@@ -132,11 +132,13 @@ def update_categories_with_confidence_score_and_coordinates(document, azure_ocr_
 
 def update_confidence_score_with_coordinates(document, azure_ocr_output):
     try:
-        document = update_categories_with_confidence_score_and_coordinates(document, azure_ocr_output, "balance_sheet", "assets")
-        document = update_categories_with_confidence_score_and_coordinates(document, azure_ocr_output, "balance_sheet", "liabilities")
+        if document.get("is_balance_sheet_present", "No") == "Yes":
+            document = update_categories_with_confidence_score_and_coordinates(document, azure_ocr_output, "balance_sheet", "assets")
+            document = update_categories_with_confidence_score_and_coordinates(document, azure_ocr_output, "balance_sheet", "liabilities")
 
-        document = update_categories_with_confidence_score_and_coordinates(document, azure_ocr_output, "income_statement", "revenue_income")
-        document = update_categories_with_confidence_score_and_coordinates(document, azure_ocr_output, "income_statement", "expenses")
+        if document.get("is_income_statement_present", "No") == "Yes":
+            document = update_categories_with_confidence_score_and_coordinates(document, azure_ocr_output, "income_statement", "revenue_income")
+            document = update_categories_with_confidence_score_and_coordinates(document, azure_ocr_output, "income_statement", "expenses")
        
         return document
     except Exception as e:
