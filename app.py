@@ -152,7 +152,7 @@ async def extract_pdf(pdf_file_path: UploadFile, task: dict):
         task["error"] = str(e)
 
         await update_item(task)
-        print('Error occured while processing the document', e)
+        print(f'Error occured while processing the document. method: {extract_pdf.__name__} ', e)
     #     return JSONResponse(content={"message": "An error occurred while processing the document.", "error": str(e)}, status_code=500)
 
 @app.get("/api/status/{task_id}")
