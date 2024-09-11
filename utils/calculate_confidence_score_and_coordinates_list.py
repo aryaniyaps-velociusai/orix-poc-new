@@ -48,7 +48,7 @@ def match_respective_words(words, value, azure_ocr_page, word_index, page_number
     try:
         if len(words) == 1 and check_value_type(value):
             azure_ocr_word = azure_ocr_page["words"][word_index]["content"]
-            return azure_ocr_word.replace(',', '').replace('$','').replace('-').replace('(').replace(')') == value.replace('-')
+            return azure_ocr_word.replace(',', '').replace('$','').replace('-', '').replace('(', '').replace(')', '') == value.replace('-', '')
         if len(words)>0:
             x =  azure_ocr_page["words"][word_index]["content"].lower()
             if fuzz.ratio(azure_ocr_page["words"][word_index]["content"].lower(),words[0].lower()) > 90:
