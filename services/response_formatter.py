@@ -1,10 +1,14 @@
 import copy
 import json
 
+from utils.json_to_xlsx import operating_statement_excel_field_mapping
+
 
 def transform_array_data_to_json(data, subcategory):
     formatted_json_response = {}
     formatted_json_response[subcategory] = {}
+
+
 
     for key, values in data[subcategory].items():
         # print('start')
@@ -18,8 +22,21 @@ def transform_array_data_to_json(data, subcategory):
                 "value": field[1],
                 "page_number": field[2]
                 })
+        
+        coa_label = None
+
+        if subcategory == "assets":
+            coa_label = operating_statement_excel_field_mapping["balance_sheet"]["assets"][key]
+        elif subcategory == "liabilities":
+            coa_label = operating_statement_excel_field_mapping["balance_sheet"]["liabilities"][key]
+        elif subcategory == "revenue_income":
+            coa_label = operating_statement_excel_field_mapping["income_statement"]["revenue_income"][key]
+        elif subcategory == "expenses":
+            coa_label = operating_statement_excel_field_mapping["income_statement"]["expenses"][key]
+
         formatted_json_response[subcategory][key] = {
-            "fields": fields
+            "fields": fields,
+            "label": coa_label
         }
 
     print("subcategory: ", subcategory)

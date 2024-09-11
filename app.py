@@ -6,7 +6,7 @@ import os
 from uuid import uuid4
 from process_pdf_document import process_pdf_document
 from utils.s3_upload import upload_to_s3_generate_presigned_download_url
-# from utils.json_to_xlsx import document_json_to_xlsx
+from utils.json_to_xlsx import document_json_to_xlsx
 from utils.cosmos_db_op import create_record, get_item_by_id, update_item
 import time
 
@@ -44,25 +44,25 @@ async def root_path():
     return HTMLResponse(content='<section><h1>This is root path!</h1><a href="/docs">Go to API docs</a></section>')
 
 
-# @app.post("/api/get-excel-from-document-json")
-# async def get_excel_from_document_json(request_body: Request):
-#     try:
-#         document_json = await request_body.json()
-#         file_name = document_json['file_name']
-#         timestamp = int(time.time())
-#         excel_output_path = document_json_to_xlsx(document_json, './excel_output_template.xlsx', file_name, timestamp)
-#         excel_output_s3_presigned_url = None
+@app.post("/api/get-excel-from-document-json")
+async def get_excel_from_document_json(request_body: Request):
+    try:
+        document_json = await request_body.json()
+        file_name = document_json['file_name']
+        timestamp = int(time.time())
+        excel_output_path = document_json_to_xlsx(document_json, './excel_output_template.xlsx', file_name, timestamp)
+        excel_output_s3_presigned_url = None
 
-#         if os.path.exists(excel_output_path):
-#             excel_output_s3_presigned_url = await upload_to_s3_generate_presigned_download_url(excel_output_path)
+        if os.path.exists(excel_output_path):
+            excel_output_s3_presigned_url = await upload_to_s3_generate_presigned_download_url(excel_output_path)
 
-#         data = {
-#             "message": "Excel file generated Successfully!",
-#             "excel_output_url": excel_output_s3_presigned_url,
-#         }
-#         return JSONResponse(content=data, status_code=201)
-#     except Exception as e:
-#         return JSONResponse(content={"message": "An error occurred while processing the json to excel.", "error": str(e)}, status_code=500)
+        data = {
+            "message": "Excel file generated Successfully!",
+            "excel_output_url": excel_output_s3_presigned_url,
+        }
+        return JSONResponse(content=data, status_code=201)
+    except Exception as e:
+        return JSONResponse(content={"message": "An error occurred while processing the json to excel.", "error": str(e)}, status_code=500)
 
 
 @app.post("/api/extract-pdf")
@@ -152,7 +152,7 @@ async def extract_pdf(pdf_file_path: UploadFile, task: dict):
         task["error"] = str(e)
 
         await update_item(task)
-        print('Error occured while processing the document', e)
+        print(f'Error occured while processing the document. method: {extract_pdf.__name__} ', e)
     #     return JSONResponse(content={"message": "An error occurred while processing the document.", "error": str(e)}, status_code=500)
 
 @app.get("/api/status/{task_id}")
