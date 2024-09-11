@@ -188,3 +188,6 @@ def json_to_xlsx(data_json, template_path, pdf_filename_without_extension, times
   
   except Exception as e:
       print(f'Error occured in : {json_to_xlsx.__name__}', e)
+
+def document_json_to_xlsx(data_json, template_path, pdf_filename_without_extension, timestamp):
+    return json_to_xlsx(data_json, template_path, pdf_filename_without_extension, timestamp)

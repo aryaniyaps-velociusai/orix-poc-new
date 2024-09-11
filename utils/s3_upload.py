@@ -21,29 +21,14 @@ async def upload_to_s3_generate_presigned_download_url(file_path):
     s3_key = f"clearstreet-advisors/due-dilligence/output/{id}"
     await upload_file_to_s3(file_path, BUCKET_NAME, s3_key)
 
-    # s3_client.upload_file(file_path, BUCKET_NAME, s3_key)
-
 
     file_name = os.path.basename(file_path)
 
     presign_url = await generate_presigned_url(BUCKET_NAME, s3_key, file_name)
 
-    # presign_url = s3_client.generate_presigned_url(
-    #     ClientMethod='get_object',
-    #     Params={
-    #         'Bucket': BUCKET_NAME,
-    #         'Key': s3_key,
-    #         'ResponseContentDisposition': f"attachment; filename = {urllib.parse.quote(file_name)}"
-    #     },
-    #     ExpiresIn=3600)
-    # print(presign_url)
 
     return presign_url
 
-
-# test_file = "Title Data Sample.xlsx"
-#
-# upload_to_s3_generate_presigned_download_url(test_file)
 
 async def upload_file_to_s3(file_path, bucket_name, object_name=None):
     # If S3 object_name was not specified, use file_name
@@ -88,7 +73,7 @@ async def generate_presigned_url(bucket_name, object_name, file_name = None, exp
     return response
 
 async def main():
-    file_path = 'Title Reports/541-956999_Title Report.pdf'
+    file_path = 'orix_docs/Operating Statements/107311---DPO---Operating-Statements---9-30-2023---THE-TERRACE-OF-HAMMOND-PHASE-I.PDF'
     object_name = 'your-object-name-in-s3.txt'
     id = str(uuid.uuid4())
     s3_key = f"clearstreet-advisors/due-dilligence/output/{id}"
@@ -102,4 +87,4 @@ async def main():
             print(f"Presigned URL: {presigned_url}")
 
 if __name__ == '__main__':
-    asyncio.run(upload_to_s3_generate_presigned_download_url('Title Reports/541-956999_Title Report.pdf'))
+    asyncio.run(upload_to_s3_generate_presigned_download_url('excel_output/excel_output_1726020263_107311---DPO---Operating-Statements---9-30-2023---THE-TERRACE-OF-HAMMOND-PHASE-I.xlsx'))
