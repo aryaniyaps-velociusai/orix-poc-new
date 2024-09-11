@@ -1,5 +1,6 @@
 from fuzzywuzzy import fuzz
 import json
+import re
 
 def convert_polygon_list(polygon):
     converted_polygon = []
@@ -45,20 +46,26 @@ def check_value_type(value):
         return False
 
 def match_respective_words(words, value, azure_ocr_page, word_index, page_number):
+    if value == '':
+        return False
     try:
         if len(words) == 1 and check_value_type(value):
             azure_ocr_word = azure_ocr_page["words"][word_index]["content"]
-            return azure_ocr_word.replace(',', '').replace('$','').replace('-', '').replace('(', '').replace(')', '') == value.replace('-', '')
+            cleaned_azure_ocr_word = re.sub(r'[,$\-()]', '', azure_ocr_word)
+            if not re.match(r'^\d*\.?\d{0,2}$', cleaned_azure_ocr_word) or cleaned_azure_ocr_word == '':
+                return False
+            else:
+                return f"{float(cleaned_azure_ocr_word):.2f}" == f"{float(value):.2f}".replace('-', '')
         if len(words)>0:
             x =  azure_ocr_page["words"][word_index]["content"].lower()
-            if fuzz.ratio(azure_ocr_page["words"][word_index]["content"].lower(),words[0].lower()) > 90:
+            if fuzz.ratio(azure_ocr_page["words"][word_index]["content"].lower(),words[0].lower()) > 95:
                 output_str_lst = []
                 for i in range(len(words)):
                     if word_index + i >= len(azure_ocr_page["words"]):
                         return False
                     output_str_lst.append(azure_ocr_page["words"][word_index + i]["content"].lower())
                 output_str = ' '.join(output_str_lst)
-                if fuzz.ratio(output_str, value.lower()) > 90:
+                if fuzz.ratio(output_str, value.lower()) > 95:
                     return True
             return False
     except Exception as e:
