@@ -160,11 +160,24 @@ def populate_sheet(sheet, field_mapping, data_values):
                     if not data_values[key].get("is_total_field", False):
                         row[1].value = field_sum
                         formatted_comment = ""
-                        formatted_comment = "\n".join([f'{field["field_name"]} : {field["value"]},  Page-{field["page_number"]}' for field in data_values[key]["fields"]])
+                        if data_values[key].get("edited", False):
+                            formatted_comment += "<-- Edited -->\n\n"
+                            # row[1].font = styles.Font(color="FFA500", bold=True)
+                            # row[1].font = styles.Font(name="Arial",color="D35400", bold=True, )
+                            row[1].font = styles.Font(name="Arial",color="ED7D31", bold=True, )
+                        if key == "tenant_security_deposits":
+                            print('tenentn')
+                        formatted_comment += "\n".join([f'{field["field_name"]} : {field["value"]},  Page-{field["page_number"]}' for field in data_values[key]["fields"]])
                         row[2].value = formatted_comment
-                        row[2].alignment = styles.Alignment(wrap_text=True)
+                        row[2].alignment = styles.Alignment(vertical="top", wrap_text=True)
+
+                        lines = 1
                         if len(data_values[key]["fields"]) > 1:
-                            sheet.row_dimensions[row[0].row].height = len(data_values[key]["fields"]) * 17
+                            lines += len(data_values[key]["fields"])
+                        if data_values[key].get("edited", False):
+                            lines += 2
+
+                        sheet.row_dimensions[row[0].row].height = lines * 17
     except Exception as e:
        print(f'Error occured in {populate_sheet.__name__}', e)
        raise e    
