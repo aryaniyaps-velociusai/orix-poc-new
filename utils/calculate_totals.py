@@ -34,6 +34,8 @@ def calculate_balance_sheet_total_assets(balance_sheet):
             "real_estate_taxes_and_insurance_escrow",
             "reserve_for_replacement",
             "operating_deficit_reserve",
+            "bond_escrow",
+            "construction_escrow",
             "miscellaneous_escrows"
         ]
         total_reserves_and_deposits = 0
@@ -96,11 +98,15 @@ def calculate_balance_sheet_total_liabilities(balance_sheet):
 
         total_current_liabilities_subtotal_fields = [
             "accounts_payable",
+            "accrued_property_taxes",
             "other_accrued_expenses",
             "tenant_security_deposits",
+            "accrued_management_fees",
             "prepaid_rent",
             "accrued_interest_payable",
-            "accrued_property_taxes"
+            "mortgage_notes_payable_current_portion",
+            "construction_payable",
+            "miscellaneous_current_liabilities"
         ]
 
 
@@ -113,9 +119,17 @@ def calculate_balance_sheet_total_liabilities(balance_sheet):
 
         total_long_term_liabilities_subtotal_fields = [
             "mortgage_notes_payable_long_term",
+            "loan_issuance_costs_net_of_accum_amort",
+            "construction_loan",
             "developer_fee_payable",
+            "development_advances",
             "project_expense_loans",
-            "soft_debt_payable"
+            "working_capital_loans",
+            "accrued_distributions_fees_to_ilpi",
+            "soft_debt_payable",
+            "accrued_soft_debt_interest",
+            "ilp_loans",
+            "other_long_term_liabilities"
         ]
         total_long_term_liabilities = 0
 
@@ -454,7 +468,7 @@ def calculate_dict_total(dict_obj):
 
             if isinstance(sub_dict, dict):
                 sub_dict_field_total = sum([float(str(field["value"]).replace(',', '')) for field in sub_dict["fields"]])
-                sub_dict["total"] = sub_dict_field_total
+                sub_dict["total"] = round(sub_dict_field_total, 2)
     except Exception as e:
         print(f"Error occured in: {calculate_dict_total.__name__}")
         raise e
