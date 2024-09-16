@@ -68,78 +68,79 @@ income_statement_response_format = {
     "is_income_statement_present": "Yes/No",
     "income_statement": {
         "revenue_income": {
-            'apartment_revenue': [["field_label", "field_value", "pdf_document_page_number"],],
-            'gain_loss_to_lease': [["field_label", "field_value", "pdf_document_page_number"],],
-            'commercial_revenue': [["field_label", "field_value", "pdf_document_page_number"],],
+            'apartment_revenue': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'gain_loss_to_lease': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'commercial_revenue': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
             'gross_potential_rent': "0",
-            'vacancy_apartments': [["field_label", "field_value", "pdf_document_page_number"],],
-            'vacancy_commercial': [["field_label", "field_value", "pdf_document_page_number"],],
+            'vacancy_apartments': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'vacancy_commercial': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
             'total_vacancy': "0",
-            'bad_debt': [["field_label", "field_value", "pdf_document_page_number"],],
-            'concessions': [["field_label", "field_value", "pdf_document_page_number"],],
+            'bad_debt': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'concessions': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
             'net_rental_revenue': "0",
-            'laundry': [["field_label", "field_value", "pdf_document_page_number"],],
-            'parking': [["field_label", "field_value", "pdf_document_page_number"],],
-            'interest_income': [["field_label", "field_value", "pdf_document_page_number"],],
-            'miscellaneous_revenue': [["field_label", "field_value", "pdf_document_page_number"],],
+            'laundry': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'parking': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'interest_income': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'miscellaneous_revenue': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
             'total_other_revenue': "0",
             'net_revenue': "0",
         },
         "expenses": {
-            'administrative_payroll': [["field_label", "field_value", "pdf_document_page_number"],],
-            'management_fee': [["field_label", "field_value", "pdf_document_page_number"],],
-            'administrative_expenses': [["field_label", "field_value", "pdf_document_page_number"],],
+            'administrative_payroll': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'management_fee': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'administrative_expenses': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
             'total_administrative_expenses': "0",
-            'water_sewer': [["field_label", "field_value", "pdf_document_page_number"],],
-            'other_utilities_expense': [["field_label", "field_value", "pdf_document_page_number"],],
+            'water_sewer': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'other_utilities_expense': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
             'total_utilities_expense': "0",
-            'maintenance_payroll': [["field_label", "field_value", "pdf_document_page_number"],],
-            'trash_removal': [["field_label", "field_value", "pdf_document_page_number"],],
-            'maintenance_expenses': [["field_label", "field_value", "pdf_document_page_number"],],
+            'maintenance_payroll': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'trash_removal': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'maintenance_expenses': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
             'total_maintenance_expenses': "0",
-            'real_estate_taxes': [["field_label", "field_value", "pdf_document_page_number"],],
-            'property_liability_insurance': [["field_label", "field_value", "pdf_document_page_number"],],
+            'real_estate_taxes': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'property_liability_insurance': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
             'total_taxes_and_insurance': "0",
             'total_operating_expenses': "0",
             'net_operating_income': "0",
-            'interest_expense_hard_debt': [["field_label", "field_value", "pdf_document_page_number"],],
-            'interest_expense_construction': [["field_label", "field_value", "pdf_document_page_number"],],
-            'interest_expense_soft_debt': [["field_label", "field_value", "pdf_document_page_number"],],
-            'interest_on_notes': [["field_label", "field_value", "pdf_document_page_number"],],
-            'amortization_of_loan_issuance_costs': [["field_label", "field_value", "pdf_document_page_number"],],
+            'interest_expense_hard_debt': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'interest_expense_construction': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'interest_expense_soft_debt': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'interest_on_notes': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'amortization_of_loan_issuance_costs': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
             'total_interest_on_mortgage_notes': "0",
-            'loan_fees': [["field_label", "field_value", "pdf_document_page_number"],],
-            'mortgage_insurance_premium': [["field_label", "field_value", "pdf_document_page_number"],],
-            'miscellaneous_financial_expenses': [["field_label", "field_value", "pdf_document_page_number"],],
+            'loan_fees': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'mortgage_insurance_premium': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'miscellaneous_financial_expenses': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
             'total_financial_expenses': "0",
-            'other_non_cash_expenses_income': [["field_label", "field_value", "pdf_document_page_number"],],
-            'depreciation_other_amortization': [["field_label", "field_value", "pdf_document_page_number"],],
-            'partnership_fees': [["field_label", "field_value", "pdf_document_page_number"],],
-            'non_recurring_non_cash_expense': [["field_label", "field_value", "pdf_document_page_number"],],
-            'non_recurring_non_cash_income': [["field_label", "field_value", "pdf_document_page_number"],],
-            'capital_repairs_not_capitalized': [["field_label", "field_value", "pdf_document_page_number"],],
-            'non_recurring_cash_expense': [["field_label", "field_value", "pdf_document_page_number"],],
-            'non_recurring_cash_income': [["field_label", "field_value", "pdf_document_page_number"],],
-            'impairment': [["field_label", "field_value", "pdf_document_page_number"],],
+            'other_non_cash_expenses_income': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'depreciation_other_amortization': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'partnership_fees': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'non_recurring_non_cash_expense': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'non_recurring_non_cash_income': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'capital_repairs_not_capitalized': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'non_recurring_cash_expense': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'non_recurring_cash_income': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'impairment': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
             'net_profit_loss': "0",
-            'principal_payments_hard_debt': [["field_label", "field_value", "pdf_document_page_number"],],
-            'principal_payments_soft_debt': [["field_label", "field_value", "pdf_document_page_number"],],
+            'principal_payments_hard_debt': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'principal_payments_soft_debt': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
             'total_mortgage_principal_payments': "0",
             'depreciation_amort_other_non_cash': "0",
-            'actual_replacement_reserve_deposits': [["field_label", "field_value", "pdf_document_page_number"],],
-            'replacement_reserve_withdrawals': [["field_label", "field_value", "pdf_document_page_number"],],
-            'interest_expense_soft_debt_accrued': [["field_label", "field_value", "pdf_document_page_number"],],
-            'accrued_partnership_fees': [["field_label", "field_value", "pdf_document_page_number"],],
-            'capital_improvements_not_expensed': [["field_label", "field_value", "pdf_document_page_number"],],
-            'preferred_equity_distribution': [["field_label", "field_value", "pdf_document_page_number"],],
-            'other_adjustments': [["field_label", "field_value", "pdf_document_page_number"],],
+            'actual_replacement_reserve_deposits': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'replacement_reserve_withdrawals': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'interest_expense_soft_debt_accrued': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'accrued_partnership_fees': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'capital_improvements_not_expensed': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'preferred_equity_distribution': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'other_adjustments': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
             'total_operating_cash_flow': "0",
-            'capital_contributions': [["field_label", "field_value", "pdf_document_page_number"],],
-            'deficit_funding': [["field_label", "field_value", "pdf_document_page_number"],],
-            'ilp_fund_advances': [["field_label", "field_value", "pdf_document_page_number"],],
-            'other_cash_flow_adjustments': [["field_label", "field_value", "pdf_document_page_number"],],
+            'capital_contributions': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'deficit_funding': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'ilp_fund_advances': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
+            'other_cash_flow_adjustments': [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category"],],
             'total_net_cash_flow': "0"
-        }
+        },
+        "unmapped_fields": [["field_label", "field_value", "pdf_document_page_number", "pdf_subheader_category", "reason_for_not_being_mapped"],]
     }
 
 }
@@ -473,12 +474,11 @@ def get_income_statement_user_prompt(extracted_text):
                - ** Please Extract field values for Chart of Accounts (CoA) as per the guidelines mentioned for Income Statement.
                - ** Your task is to map all fields from extracted text to any Chart of Accounts that is most similar or most related match
                     - If you are unable to map any field to a CoA then search for CoA with most similar or most related match, All fields should be mapped
-               - ** Each CoA can have multiple fields mapped to it
+               - ** Each CoA can have multiple unique fields mapped to it
                - ** Output for each CoA is a list of fields in format ["field_label", "field_value", "pdf_document_page_number"]
                     - "field_label" is the label of the field
-                    - "field_value" is the value of the field which is a decimal value
+                    - "field_value" is the value of the extracted field which is a decimal value
                     - "pdf_document_page_number" is an integer value
-                    - If any field is not mapped to any COA then output is an empty array
                - ** pdf_document_page_number is a number present in the format "<!-- PdfDocumentPageNumber 7 -->" at the begining of each page
                - ** If a value is surrounded by round paranthesis, then the value will be negative
                     - E.g. (14,876) will be -14,876
@@ -496,6 +496,12 @@ def get_income_statement_user_prompt(extracted_text):
                         - Total YTD Required Replacement Reserve Deposits (excluding interest)
                         - Total YTD Replacement Reserve Withdrawals
                - ** If Income Statement is not present in the extracted text then income_statement key will be 'null'
+               - ** "pdf_subheader_category" is the subheader under which the field is present in the extracted text table
+                        - subheader can be identified as cells that do not have any value against them
+                        - "pdf_subheader_category" can only be either "income" or "expenses"
+                        - any cells with value against them must be mapped to a CoA as per the income statement guidelines and it's not dependent on "pdf_subheader_category"
+               - ** Any field must only be mapped once to a CoA
+
 
          ## Income Statement guidelines:
             - ## Income / Revenue Chart of Accounts (CoA)
