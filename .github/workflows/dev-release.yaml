@@ -1,13 +1,13 @@
-name: orix-poc-qa-cicd-workflow
+name: orix-poc-dev-cicd-workflow
 
 on:
   push:
     branches:
-      - qa
+      - dev
   workflow_dispatch:
 env:
   SOLUTION_FOLDER: ./
-  APPNAME: orix-poc-qa
+  APPNAME: orix-poc-dev
   IMAGENAME: orix-poc
   AZURE_CONTAINER_REGISTRY: cmncontainerregistry
   AZURE_CONTAINER_REGISTRY_URL: https://cmncontainerregistry.azurecr.io
@@ -63,7 +63,7 @@ jobs:
           context: ./
           file: Dockerfile
           push: true
-          tags: ${{env.AZURE_CONTAINER_REGISTRY_hostname}}/${{env.IMAGENAME}}:qa
+          tags: ${{env.AZURE_CONTAINER_REGISTRY_hostname}}/${{env.IMAGENAME}}:dev
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
           
