@@ -44,9 +44,11 @@ async def process_pdf_document(pdf_path, task):
     ocr_response_text_path = f'textract_response_output/layout_text_response_{pdf_filename_without_extension}.txt'
     json_response_path = f"json_response_folder/json_response_{pdf_filename_without_extension}_{timestamp}.json"
     formatted_json_response_path = f"formatted_json_response_folder/formatted_json_response_{pdf_filename_without_extension}_{timestamp}.json"
+    openai_json_response_path = f"openai_json_response_folder/openai_json_response_{pdf_filename_without_extension}_{timestamp}.json"
     azure_ocr_json_response_path = f"azure_ocr_json_response_folder/azure_ocr_json_response_{pdf_filename_without_extension}_{timestamp}.json"
     create_subfolders(json_response_path)
     create_subfolders(formatted_json_response_path)
+    create_subfolders(openai_json_response_path)
     create_subfolders(ocr_response_text_path)
     create_subfolders(azure_ocr_json_response_path)
 
@@ -158,6 +160,9 @@ async def process_pdf_document(pdf_path, task):
         logger.info(json.dumps(income_statement_json_response, indent=2))
 
         # 
+
+        with open(openai_json_response_path, "w") as file:
+            file.write(json.dumps(json_response, indent=2))
 
 
         formatted_json_response = format_os_response(json_response)

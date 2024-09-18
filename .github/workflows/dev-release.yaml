@@ -1,0 +1,83 @@
+name: orix-poc-dev-cicd-workflow
+
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+env:
+  SOLUTION_FOLDER: ./
+  APPNAME: orix-poc-dev
+  IMAGENAME: orix-poc
+  AZURE_CONTAINER_REGISTRY: cmncontainerregistry
+  AZURE_CONTAINER_REGISTRY_URL: https://cmncontainerregistry.azurecr.io
+  AZURE_CONTAINER_REGISTRY_hostname: cmncontainerregistry.azurecr.io
+  RESOURCEGROUP: orix-poc
+  ACR_RESOURCE_GROUP: common-res-grp
+  DOCKER_FILE: ./Dockerfile
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+      - run: sudo snap install powershell --classic
+      - run: az extension add --name containerapp --upgrade
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZ_UAMI_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZ_UAMI_TENANT_ID }}
+          subscription-id: ${{ secrets.AZ_UAMI_SUBSCRIPTION_ID }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: ACR login
+        run: az acr login --name ${{ env.AZURE_CONTAINER_REGISTRY }}
+
+      - name: Set Working Directory
+        working-directory: ${{ env.SOLUTION_FOLDER }}
+        run: pwd
+      - run: ls -lah
+
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ hashFiles('Dockerfile') }}-${{ hashFiles('requirements.txt')}}
+          restore-keys: |
+            ${{ runner.os }}-buildx-${{ hashFiles('Dockerfile') }}-${{ hashFiles('requirements.txt')}}
+            ${{ runner.os }}-buildx-
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./
+          file: Dockerfile
+          push: true
+          tags: ${{env.AZURE_CONTAINER_REGISTRY_hostname}}/${{env.IMAGENAME}}:dev
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          
+      - name: Move Cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      - name: Change msi identity
+        shell: pwsh
+        run: |
+          az webapp config set --resource-group "${{ env.RESOURCEGROUP }}" --name "${{ env.APPNAME }}" --generic-configurations '{"acrUseManagedIdentityCreds": "true"}'
+
+      - name: Restart Azure Function App
+        shell: pwsh
+        run: |
+          az webapp restart --resource-group "${{ env.RESOURCEGROUP }}" --name "${{ env.APPNAME }}"

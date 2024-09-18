@@ -17,11 +17,20 @@ def transform_array_data_to_json(data, subcategory):
             # print(values)
             for field in values:
                 # if isinstance(field, list):
-                fields.append({
-                "field_name": field[0],
-                "value": field[1],
-                "page_number": field[2]
-                })
+                if (subcategory == "revenue_income" and field[3] == "expenses") or (subcategory == "expenses" and field[3] == "income"):
+                    fields.append({
+                    "field_name": field[0],
+                    "value": -float(str(field[1]).replace(',', '')),
+                    "page_number": field[2],
+                    "pdf_subheader_category": field[3]
+                    })
+                else:
+                    fields.append({
+                    "field_name": field[0],
+                    "value": float(str(field[1]).replace(',', '')),
+                    "page_number": field[2]
+                    })
+
         
         coa_label = None
 
