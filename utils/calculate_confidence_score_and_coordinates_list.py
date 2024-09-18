@@ -52,10 +52,14 @@ def match_respective_words(words, value, azure_ocr_page, word_index, page_number
         if len(words) == 1 and check_value_type(value):
             azure_ocr_word = azure_ocr_page["words"][word_index]["content"]
             cleaned_azure_ocr_word = re.sub(r'[,$\-()]', '', azure_ocr_word)
-            if not re.match(r'^\d*\.?\d{0,2}$', cleaned_azure_ocr_word) or cleaned_azure_ocr_word == '':
+            if not re.match(r'^\d+\.?\d{0,2}$', cleaned_azure_ocr_word) or cleaned_azure_ocr_word == '':
                 return False
             else:
-                return f"{float(cleaned_azure_ocr_word):.2f}" == f"{float(value):.2f}".replace('-', '')
+                try:
+                    return f"{float(cleaned_azure_ocr_word):.2f}" == f"{float(value):.2f}".replace('-', '')
+                except Exception as e:
+                    print(f'\n===>Error while comparing azure_ocr_word: {azure_ocr_word} with value: {value}. Returned False')
+                    return False
         if len(words)>0:
             x =  azure_ocr_page["words"][word_index]["content"].lower()
             if fuzz.ratio(azure_ocr_page["words"][word_index]["content"].lower(),words[0].lower()) > 95:
