@@ -9,7 +9,7 @@ balance_sheet_response_format = {
             ],
             "tenant_accounts_receivable": [["field_label", "field_value", "pdf_document_page_number"],["field_label", "field_value", "pdf_document_page_number"],],
             "accounts_receivable_other": [["field_label", "field_value", "pdf_document_page_number"],],
-            "tenant_security_deposits": [["field_label", "field_value", "pdf_document_page_number"],],
+            "tenant_security_deposits_assets": [["field_label", "field_value", "pdf_document_page_number"],],
             "prepaid_property_insurances": [["field_label", "field_value", "pdf_document_page_number"],],
             "other_prepaid_expenses": [["field_label", "field_value", "pdf_document_page_number"],],
             "miscellaneous_current_assets": [["field_label", "field_value", "pdf_document_page_number"],],
@@ -33,7 +33,7 @@ balance_sheet_response_format = {
             "accounts_payable": [["field_label", "field_value", "pdf_document_page_number"],],
             "accrued_property_taxes": [["field_label", "field_value", "pdf_document_page_number"],],
             "other_accrued_expenses": [["field_label", "field_value", "pdf_document_page_number"],],
-            "tenant_security_deposits": [["field_label", "field_value", "pdf_document_page_number"],],
+            "tenant_security_deposits_liabilities": [["field_label", "field_value", "pdf_document_page_number"],],
             "accrued_management_fees": [["field_label", "field_value", "pdf_document_page_number"],],
             "prepaid_rent": [["field_label", "field_value", "pdf_document_page_number"],],
             "accrued_interest_payable": [["field_label", "field_value", "pdf_document_page_number"],],
@@ -171,6 +171,11 @@ def get_balance_sheet_user_prompt(extracted_text):
                     - Classify the fields under Assets and liabilities as per the CoA mentioned for Balance Sheet
                     - Any value from extracted text should be mapped to the field that matches the CoA
                     - the output value for each CoA would be a list of values as per the JSON format
+                    - Do not extract fields from the extracted text which is sum of field values
+               - ** "pdf_subheader_category" is the subheader under which the field is present in the extracted text table
+                    - subheader can be identified as cells that do not have any value against them
+                    - any cells with value against them must be mapped to a CoA as per the balance sheet guidelines and it's not dependent on "pdf_subheader_category"
+                    
                - ** If Balance Sheet is not present in the extracted text then balance_sheet key value will be 'null'
 
 
@@ -244,6 +249,7 @@ def get_balance_sheet_user_prompt(extracted_text):
                             - Payroll Deposits
                             - Short Term Borrowing
                             - Utility Deposit 
+                                - Deposits of Utilities
                     
                         - Real Estate Taxes and Insurance Escrow
                             - Impounds
@@ -348,7 +354,8 @@ def get_balance_sheet_user_prompt(extracted_text):
                             - HAP - Payable 
                             - Intercompany Payable
                                 - If Payable or due to any company
-                                    - E.g. DuetoRichSmithManagement                
+                            - Due to company_name Management
+                                - E.g. Due to RichSmith Management              
                         - Accrued Property Taxes
                             - Accrued Pilot
                             - Accrued property taxes
@@ -360,31 +367,40 @@ def get_balance_sheet_user_prompt(extracted_text):
                             - Accrued Wage and Payroll Tax
                             - Other Accrued Liabilities
                             - Project Control
-                            - State Franchise Tax Payable                
+                            - State Franchise Tax Payable  
                         - Tenant Security Deposits
                             - Interest on Security deposit
                             - Other Tenant Deposits
                             - Pet Security Deposits
                             - Tenant Security deposits                
                         - Accrued Management Fees
-                            - Accrued Property Management Fees                
+                            - Accrued Property Management Fees
+                            - Any Type of Accrued Management Fees
+                                - Accrued Asset Management Fees
+                            - Due to Management Company
+                                - Due to Any Management Company
+                                    - E.g. Due to company_name Management, where company name can be any company name                
                         - Prepaid Rent
                             - Deferred Rent / Deferred Revenue
+                            - Unearned Revenue
+                            - Unearned Income               
                             - Prepaid Rent
-                            - Unearned Revenue                
                         - Accrued Interest Payable
                             - 1st Mortgage Accrued Interest Payable
                             - 2nd Mortgage Accrued Interest Payable
                             - 3rd Mortgage Accrued Interest Payable
                             - 4th Mortgage Accrued Interest Payable
-                            - 5th  Mortgage Accrued Interest Payable                
+                            - 5th  Mortgage Accrued Interest Payable
+                            - Any kind of Accrued Interest
+                                - E.g. Accrued Interest Mortgage                
                         - Mortgage Notes Payable - Current Portion
                             - 1st Mortgage Note Payable Current Portion
                             - 2nd Mortgage Note Payable Current Portion
                             - 3rd Mortgage Note Payable Current Portion
                             - 4th Mortgage Note Payable Current Portion
                             - 5th Mortgage Note Payable Current Portion
-                            - Converted Permanent Debt (former construction loan)                
+                            - Converted Permanent Debt (former construction loan)
+                            - Any type of Mortgage Payable                
                         - Construction Payable
                             - Construction Cost Payable
                         - Miscellaneous Current Liabilities
@@ -392,6 +408,7 @@ def get_balance_sheet_user_prompt(extracted_text):
                             - Escheatment Liabilities
                             - Insurance Payable
                             - Miscellaneous Current Liabilities
+                                - Current Liabilities that could not be mapped to other CoA
                             - Unclaimed Property                
                         
                         - Mortgage Notes Payable - Long Term
@@ -411,11 +428,13 @@ def get_balance_sheet_user_prompt(extracted_text):
                             - Accrued Contractor Fee/Overhead
                             - Accrued Interest on Developer Fee
                             - Developer Fee Payable                
+                            - Development Fee Payable                
                         - Development Advances
                         - Project Expense Loans
                             - Project Expense Loans
                             - Advance from GP
-                            - Due to GP / Affiliate GP only                
+                            - Due to GP / Affiliate GP only
+                                - Due to GP Affiliates                
                         - Working Capital Loans
                             - Working Capital Loans
                             - Due to GP / Affiliate GP only              
@@ -450,14 +469,20 @@ def get_balance_sheet_user_prompt(extracted_text):
                             - Other Long Term Liabilities
                                 - Liabilities that could not be mapped to other CoA
                         
-                        - Limited Partners' Equity/(Deficiency)
-                        - Other Partners' Equity/(Deficiency)
+                        - Limited Partners' Equity / (Deficiency)
+                            - Owner Equity
+                            - Limited Partner Equity
+                        - Other Partners' Equity / (Deficiency)
                             - General Partner's Equity
                             - Other Partners' Equity / Deficiency
-                            - Special Limited Partner Equity                
+                            - Special Limited Partner Equity
+                            - Any type of Partner Distributions
+                            - Capital Contributions               
                         - Miscellaneous Equity/(Deficiency)
                             - Current Year Earnings (Retained Earnings)
-                            - Miscellaneous Equity / Deficiency                
+                            - Current Period Earnings
+                            - Miscellaneous Equity / Deficiency
+                                - Equity / Deficiency that could not be mapped to other Equity / Deficiency CoA                
                     
 
                 ## extracted Balance Sheet Text: 
@@ -491,6 +516,7 @@ def get_income_statement_user_prompt(extracted_text):
                     - Any value from extracted text should be mapped to the field that matches the CoA
                     - Income Statement values should be extracted from Year to Date column
                     - All Actual Year to Date values should be extracted and no values should be skipped
+                        - Extracted field_value for a field value should be an Actual Year to Date value i.e. in the Year to Date Column
                     - "Net Income" field denotes the end of Income Statement
                     - If you were unable to extract any value for either of the following fields from Income Statement, then extract the value from Property Status Update Form, the value extracted from income statement takes precedence if it's not empty
                         - Total YTD Hard Debt INTEREST Expense
@@ -501,7 +527,9 @@ def get_income_statement_user_prompt(extracted_text):
                - ** "pdf_subheader_category" is the subheader under which the field is present in the extracted text table
                         - subheader can be identified as cells that do not have any value against them
                         - "pdf_subheader_category" can only be either "income" or "expenses"
-                        - any cells with value against them must be mapped to a CoA as per the income statement guidelines and it's not dependent on "pdf_subheader_category"
+                            - "expenses" or "losses" subheaders are considered as "expenses"
+                            - "revenue" or "income" subheaders are considered as "income"
+                        - any fields with Actual Year to Date value against them must be mapped to a CoA as per the income statement guidelines and it's not dependent on "pdf_subheader_category"
                - ** Any field must only be mapped once to a CoA
 
 
@@ -534,11 +562,15 @@ def get_income_statement_user_prompt(extracted_text):
 
                 - Vacancy - Apartments
                     - Prior Month Vacancy
-                    - Vacancy- Apartments                
+                    - Vacancy- Apartments 
+                        - This item should be (-)               
                 - Vacancy - Commercial
                     - Vacancy - Garage and Parking
+                        - This item should be (-)
                     - Vacancy - Miscellaneous
+                        - This item should be (-)
                     - Vacancy - Stores and Commercial                
+                        - This item should be (-)
 
                 - Bad Debt
                     - Allowance for Bad Debt
@@ -548,12 +580,14 @@ def get_income_statement_user_prompt(extracted_text):
                         - E.g. Bad Debt Collections
                     - Delinquent Rent
                     - Recovery of Bad Debt
+                    - Bad Debt Recovery
                     - Rental Write Offs
                     - Tenant Uncollectibles
                     - Uncollected Rent
                     - Write Off Other Income                
                 - Concessions
                     - Concessions
+                        - Rent Concessions
                     - Free Rent
                     - Renewal incentives
                     - Rent Credits - Tenants
@@ -601,7 +635,7 @@ def get_income_statement_user_prompt(extracted_text):
                     - Tenant Legal Charges
                     - Tenant Service income
                     - Utility Reimbursement/Utility Income
-                    - Cable Fees, Break Lease Fees, Cancellation Fees (OTHER FEES)                
+                    - Cable Fees, Break Lease Fees, Cancellation Fees (OTHER FEES)      
 
             - ## Expenses  Chart of Accounts (CoA)
                 - Administrative Payroll
@@ -743,10 +777,12 @@ def get_income_statement_user_prompt(extracted_text):
                     - Repairs Payroll
                     - Superintendent Salary
                     - Tempory Help - Maintenance
-                    - Union Benefits                
+                    - Union Benefits
+                    - Salaries - Maintenance                
                 - Trash Removal
                     - Garbage Removal 
                     - Trash Removal 
+                    - Dumpster Expenses
                     - Rubbish Removal, 
                     - Recycling
                     - Refuse Service
@@ -784,7 +820,8 @@ def get_income_statement_user_prompt(extracted_text):
                     - Termite Bond Expense
                     - Tools and Equipments
                     - Turnover 
-                    - Utility Consulting                
+                    - Utility Consulting
+                    - Maintenance Payroll                 
 
                 - Real Estate Taxes
                     - Pilot Payment
@@ -914,6 +951,7 @@ def get_income_statement_user_prompt(extracted_text):
                         - This item should be (-) 
                 - Actual Replacement Reserve Deposits
                     - Actual Replacement Reserve Deposits
+                        - This item should be (-)
                     - Reserve Funding
                     - Replacement. Reserve - Held by SLN            
                 - Replacement Reserve Withdrawals
