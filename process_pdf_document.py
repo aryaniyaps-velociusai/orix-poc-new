@@ -21,6 +21,7 @@ from utils.calculate_confidence_score_and_coordinates_list import update_confide
 from logging import Logger
 from utils.logger_util import setup_logger
 from utils.m_graph import MGraphUtil
+from services.financial_prompt_updater import get_financial_items
 
 
 
@@ -133,8 +134,21 @@ async def process_pdf_document(pdf_path, task):
 
         json_response = {}
 
+                # fetch from DBsamp
+        # fetch bs_key
+        #     -> updated_prompt
+        #     -> user_feedback_bs
+        # fetch is_key
+        #     -> updated_prompt
+
+        financial_items = await get_financial_items()
+        updated_income_statement_prompt = financial_items["updated_income_statement_prompt"]
+        income_statement_user_feedback = {} if financial_items["income_statement_user_feedback"] is None else financial_items["income_statement_user_feedback"]
+        updated_balance_sheet_prompt = financial_items["updated_balance_sheet_prompt"]
+        balance_sheet_user_feedback = {} if financial_items["balance_sheet_user_feedback"] is None else financial_items["balance_sheet_user_feedback"]
+
         # get balance sheet
-        balance_sheet_user_prompt = get_balance_sheet_user_prompt(extracted_text)
+        balance_sheet_user_prompt = get_balance_sheet_user_prompt(updated_balance_sheet_prompt, extracted_text)
         balance_sheet_openai_response, _ = await extract_data_azure_openai(balance_sheet_user_prompt)
 
         balance_sheet_json_response = json.loads(balance_sheet_openai_response)
@@ -147,7 +161,7 @@ async def process_pdf_document(pdf_path, task):
 
 
         # get income statement
-        income_statement_user_prompt = get_income_statement_user_prompt(extracted_text)
+        income_statement_user_prompt = get_income_statement_user_prompt(updated_income_statement_prompt, extracted_text)
         income_statement_openai_response, _ = await extract_data_azure_openai(income_statement_user_prompt)
 
         income_statement_json_response = json.loads(income_statement_openai_response)
@@ -165,7 +179,7 @@ async def process_pdf_document(pdf_path, task):
             file.write(json.dumps(json_response, indent=2))
 
 
-        formatted_json_response = format_os_response(json_response)
+        formatted_json_response = format_os_response(json_response, balance_sheet_user_feedback, income_statement_user_feedback)
 
         with open(formatted_json_response_path, "w") as file:
             file.write(json.dumps(formatted_json_response, indent=2))
