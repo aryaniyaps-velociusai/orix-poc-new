@@ -33,7 +33,6 @@ class DefaultConfig:
     KEY = config("DATABASE_KEY")
     DATABASE_ID = config("DATABASE_ID")
     CONTAINER_ID = config("CONTAINER_ID")
-    CONTAINER_ID_PROMPT = config("CONTAINER_ID_PROMPT")
     PARTITION_ENV = config("PARTITION_ENVIRONMENT_KEY")
 
     ENVIRONMENT = config("ENV") # environment in which the script is running e.g. local, dev, qa, prod

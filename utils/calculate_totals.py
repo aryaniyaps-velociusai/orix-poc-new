@@ -14,7 +14,7 @@ def calculate_balance_sheet_total_assets(balance_sheet):
             "cash",
             "tenant_accounts_receivable",
             "accounts_receivable_other",
-            "tenant_security_deposits_assets",
+            "tenant_security_deposits",
             "prepaid_property_insurances",
             "other_prepaid_expenses",
             "miscellaneous_current_assets"
@@ -100,7 +100,7 @@ def calculate_balance_sheet_total_liabilities(balance_sheet):
             "accounts_payable",
             "accrued_property_taxes",
             "other_accrued_expenses",
-            "tenant_security_deposits_liabilities",
+            "tenant_security_deposits",
             "accrued_management_fees",
             "prepaid_rent",
             "accrued_interest_payable",
