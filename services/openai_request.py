@@ -27,7 +27,7 @@ async def extract_data_openai(user_prompt):
         response_format={"type": "json_object"},
         temperature=0.2,
         messages=[
-            {"role": "system", "content": "You are a highly accurate assistant skilled at processing Balance Sheet and/or Income Statement information from provided text data."},
+            {"role": "system", "content": "You are a highly accurate accounting assistant skilled at processing Balance Sheet and/or Income Statement information from provided text data."},
             {"role": "user", "content": user_prompt},
             # {"role": "user", "content":"If you are unable to map fields to a CoA, return list of such unmapped fields, give reasons for doing so, guidelines taken into consideration, additional instructions/guidelines required in additional json fields in the json output"}
         ]
@@ -57,7 +57,7 @@ async def extract_data_azure_openai(user_prompt):
         response_format={"type": "json_object"},
         temperature=0.2,
         messages=[
-            {"role": "system", "content": "You are a highly accurate assistant skilled at processing Balance Sheet and/or Income Statement information from provided text data."},
+            {"role": "system", "content": "You are a highly accurate accounting assistant skilled at processing Balance Sheet and/or Income Statement information from provided text data."},
             {"role": "user", "content": user_prompt},
             # {"role": "user", "content":"If you are unable to map fields to a CoA, return list of such unmapped fields, give reasons for doing so, guidelines taken into consideration, additional instructions/guidelines required in additional json fields in the json output"}
         ]

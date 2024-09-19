@@ -89,7 +89,7 @@ def convert_to_jpeg(input_path, output_folder, file_index=1):
         img.save(output_path, "JPEG", dpi=(300, 300))
 
 
-def process_image(input_path, output_folder, max_size_mb=4, quality=85):
+def process_image(input_path, output_folder, max_size_mb=4, quality=95):
     # Processed image prefix for saving
     processed_image_prefix = os.path.join(
         output_folder, "processed_images", "processed_page"

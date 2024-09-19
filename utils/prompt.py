@@ -174,296 +174,298 @@ def get_balance_sheet_user_prompt(extracted_text):
                - ** If Balance Sheet is not present in the extracted text then balance_sheet key value will be 'null'
 
 
-         ## Balance Sheet Document guidelines:
+                ## Balance Sheet Document guidelines:
 
-            - ## Assets Chart of Accounts (CoA)      
-                - Cash
-                    - Any Escrow values will not come under Cash
-                    - Only below categories is considered as Cash
-                        - Cash In Bank
-                        - CD's
-                        - Checking Account	
-                        - Investment Cash	
-                        - Investment Fund	
-                        - Money Market - Cash	
-                        - Month End Arrears	
-                        - Operating Account/Cash	
-                        - Partnership Checking - Owner Held	
-                        - Petty Cash
-                        - Rental Depository Account	
-                        - U.S. Bank Funds	
-                - Tenant Accounts Receivable
-                    - A/R - Local Housing Authority
-                    - A/R - PHA
-                    - A/R- Residents
-                    - Allowance for Doubtful Accounts
-                        - This should be (-) and reduce Tenant Accounts Receivable
-                    - Bad Debt Allowance
-                        - This should be (-) and reduce Tenant Accounts Receivable
-                    - HAP Receivable
-                    - HUD Receivable
-                    - Rent Receivable 
-                    - Section 8 A/R
-                    - Subsidies Receivable
-                    - Subsidized Rent
-                    - Tenant Accounts Receivable
-                    - Uncollected Rent
-                - Accounts Receivable Other
-                    - A/R - Due from Affiliate
-                    - Accounts Receivable Other
-                    - Clearing Account
-                    - Due from Other Company
-                    - Intercompany Receivable
-                    - Owner Receivables
-                    - Partnership Contribution Receivables
-                    - Repayment Agreement
-                    - TIF Receivable
-                - Tenant Security Deposits
-                    - Cash - Security
-                    - Interest on Security deposit
-                    - Key Deposit
-                    - Other Tenant Deposits
-                    - Pet Security Deposits
-                    - Tenant Security Deposits
-                - Prepaid Property Insurances
-                    - Prepaid Insurance
-                    - Prepaid Insurance - Earthquake
-                    - Prepaid Property Insurance
-                - Other Prepaid Expenses
-                    - Prepaid Expenses Other
-                    - Prepaid Insurance Other
-                    - Prepaid Mortgage Insurance
-                    - Prepaid Real Estate Taxes
-                    - Prepaid Rent
-                - Miscellaneous Current Assets
-                    - Account Revenue Other Than Rent
-                    - Insurance Claims
-                    - Investment Short Term
-                    - Misc Current Assets
-                    - Notes Receivable
-                    - Payroll Deposits
-                    - Short Term Borrowing
-                    - Utility Deposit 
-            
-                - Real Estate Taxes and Insurance Escrow
-                    - Impounds
-                    - Insurance Escrow
-                    - MIP Escrow
-                    - Mortgage Reserve
-                    - Mortgagee Escrow Deposits
-                    - Reserve for Insurance
-                    - Reserve Hazard Insurance
-                    - RTO Escrow
-                    - Tax Rscrow
-                    - Trustee - Mortgage
-                    - Trustee - Tax & Insurance
-                - Reserve for Replacement
-                    - EUR Reserves
-                    - Painting Reserve
-                    - Repair and Improvement Escrow
-                    - Reserve CD
-                    - Reserve Deposits
-                    - Reserve For Replacements
-                    - Tenant Improvement escrows
-                    - Trustee - Replacement                
-                - Operating Deficit Reserve
-                    - Operating Reserve                
-                    - Operating Deficit Reserve
-                - Bond Escrow
-                    - Bond Escrows
-                    - Debt Service Reserve
-                    - Principal Reserve
-                    - Revenue Fund
-                    - Interest Fund
-                    - Sinking Fund
-                    - Trust - Bond Fund
-                    - Trust - Interest/Admin Expense
-                    - Trust - Principal
-                    - Trustee Escrow                
-                - Construction Escrow
-                    - Development Escrow
-                    - Construction Escrow                
-                - Miscellaneous Escrows
-                    - Audit Expense Escrow
-                    - Capital Contribution Escrows
-                    - Main Fund 
-                    - Miscellaneous Escrows
-                    - MMA Special Reserve
-                    - Other Escrows
-                    - Partnership Escrow
-                    - Performance Deposits
-                    - Project Buyout Reserves
-                    - Rent Subsidy Reserves
-                    - Resident Service Reserve
-                    - Residual Receipts reserve
-                    - Social Service Reserve
-                    - Special Escrow
-                    - Transition Reserve                
-            
-                - Land
-                - Fixed Assets
-                    - Building
-                    - Building Improvements
-                    - Building Equipment
-                    - Capital Expenditures
-                    - Capital Improvements
-                    - Computer Equipment/Software
-                    - Construction in Progress/Work in Progress
-                    - Furniture
-                    - Land Improvements
-                    - Maintenance Equipment
-                    - Motor Vehicles
-                    - Other Fixed Assets
-                    - Personal Property
-                    - Rehab Cost                
-                - Accumulated Depreciation
-            
-                - Other Assets
-                    - Accumulated Amortization
-                    - Capital Subscriptions
-                    - Compliance Monitoring Fees
-                    - Deferred Charges
-                    - Deferred Financing Costs, Net
-                    - Deferred Organization Costs, Net
-                    - Deposits Receivable
-                    - Exchange
-                    - Intangible Assets
-                    - Loan Costs
-                    - Miscellaneous Other Assets
-                    - Net Program Cost Congregate
-                    - Other Assets
-                    - Prepaid Loan Fees
-                    - Prepaid Land/Ground Lease
-                    - Refundable Deposits
-                    - Syndication Fee
-                    - Tax Credit Monitoring Fees
-                    - Title and Record Fee                            
-            
-            - ## Liabilities  Chart of Accounts (CoA)
-                - Accounts Payable
-                    - Accounts Payable / AP-Trade
-                    - AP - Other Projects
-                    - HAP - Payable 
-                    - Intercompany Payable
-                        - If Payable or due to any company
-                            - E.g. DuetoRichSmithManagement                
-                - Accrued Property Taxes
-                    - Accrued Pilot
-                    - Accrued property taxes
-                    - Accrued Real Estate Taxes                
-                - Other Accrued Expenses
-                    - Account Payable - HUD
-                    - Accrued Operating Expenses
-                    - Accrued Payroll and Wages
-                    - Accrued Wage and Payroll Tax
-                    - Other Accrued Liabilities
-                    - Project Control
-                    - State Franchise Tax Payable                
-                - Tenant Security Deposits
-                    - Interest on Security deposit
-                    - Other Tenant Deposits
-                    - Pet Security Deposits
-                    - Tenant Security deposits                
-                - Accrued Management Fees
-                    - Accrued Property Management Fees                
-                - Prepaid Rent
-                    - Deferred Rent / Deferred Revenue
-                    - Prepaid Rent
-                    - Unearned Revenue                
-                - Accrued Interest Payable
-                    - 1st Mortgage Accrued Interest Payable
-                    - 2nd Mortgage Accrued Interest Payable
-                    - 3rd Mortgage Accrued Interest Payable
-                    - 4th Mortgage Accrued Interest Payable
-                    - 5th  Mortgage Accrued Interest Payable                
-                - Mortgage Notes Payable - Current Portion
-                    - 1st Mortgage Note Payable Current Portion
-                    - 2nd Mortgage Note Payable Current Portion
-                    - 3rd Mortgage Note Payable Current Portion
-                    - 4th Mortgage Note Payable Current Portion
-                    - 5th Mortgage Note Payable Current Portion
-                    - Converted Permanent Debt (former construction loan)                
-                - Construction Payable
-                    - Construction Cost Payable
-                - Miscellaneous Current Liabilities
-                    - Adjustments
-                    - Escheatment Liabilities
-                    - Insurance Payable
-                    - Miscellaneous Current Liabilities
-                    - Unclaimed Property                
+                    - ## Assets Chart of Accounts (CoA)      
+                        - Cash
+                            - Any Escrow values will not come under Cash
+                            - Only below categories is considered as Cash
+                                - Cash In Bank
+                                - CD's
+                                - Checking Account	
+                                - Investment Cash	
+                                - Investment Fund	
+                                - Money Market - Cash	
+                                - Month End Arrears	
+                                - Operating Account/Cash	
+                                - Partnership Checking - Owner Held	
+                                - Petty Cash
+                                - Rental Depository Account	
+                                - U.S. Bank Funds	
+                        - Tenant Accounts Receivable
+                            - A/R - Local Housing Authority
+                            - A/R - PHA
+                            - A/R- Residents
+                            - Allowance for Doubtful Accounts
+                                - This should be (-) and reduce Tenant Accounts Receivable
+                            - Bad Debt Allowance
+                                - This should be (-) and reduce Tenant Accounts Receivable
+                            - HAP Receivable
+                            - HUD Receivable
+                            - Rent Receivable 
+                            - Section 8 A/R
+                            - Subsidies Receivable
+                            - Subsidized Rent
+                            - Tenant Accounts Receivable
+                            - Uncollected Rent
+                        - Accounts Receivable Other
+                            - A/R - Due from Affiliate
+                            - Accounts Receivable Other
+                            - Clearing Account
+                            - Due from Other Company
+                            - Intercompany Receivable
+                            - Owner Receivables
+                            - Partnership Contribution Receivables
+                            - Repayment Agreement
+                            - TIF Receivable
+                        - Tenant Security Deposits
+                            - Cash - Security
+                            - Interest on Security deposit
+                            - Key Deposit
+                            - Other Tenant Deposits
+                            - Pet Security Deposits
+                            - Tenant Security Deposits
+                        - Prepaid Property Insurances
+                            - Prepaid Insurance
+                            - Prepaid Insurance - Earthquake
+                            - Prepaid Property Insurance
+                        - Other Prepaid Expenses
+                            - Prepaid Expenses Other
+                            - Prepaid Insurance Other
+                            - Prepaid Mortgage Insurance
+                            - Prepaid Real Estate Taxes
+                            - Prepaid Rent
+                        - Miscellaneous Current Assets
+                            - Account Revenue Other Than Rent
+                            - Insurance Claims
+                            - Investment Short Term
+                            - Misc Current Assets
+                            - Notes Receivable
+                            - Payroll Deposits
+                            - Short Term Borrowing
+                            - Utility Deposit 
+                    
+                        - Real Estate Taxes and Insurance Escrow
+                            - Impounds
+                            - Insurance Escrow
+                            - Escrow Insurance
+                            - MIP Escrow
+                            - Mortgage Reserve
+                            - Mortgagee Escrow Deposits
+                            - Reserve for Insurance
+                            - Reserve Hazard Insurance
+                            - RTO Escrow
+                            - Tax Rscrow
+                            - Trustee - Mortgage
+                            - Trustee - Tax & Insurance
+                        - Reserve for Replacement
+                            - EUR Reserves
+                            - Painting Reserve
+                            - Repair and Improvement Escrow
+                            - Reserve CD
+                            - Reserve Deposits
+                            - Reserve For Replacements
+                            - Tenant Improvement escrows
+                            - Trustee - Replacement                
+                        - Operating Deficit Reserve
+                            - Operating Reserve                
+                            - Operating Deficit Reserve
+                        - Bond Escrow
+                            - Bond Escrows
+                            - Debt Service Reserve
+                            - Principal Reserve
+                            - Revenue Fund
+                            - Interest Fund
+                            - Sinking Fund
+                            - Trust - Bond Fund
+                            - Trust - Interest/Admin Expense
+                            - Trust - Principal
+                            - Trustee Escrow                
+                        - Construction Escrow
+                            - Development Escrow
+                            - Construction Escrow                
+                        - Miscellaneous Escrows
+                            - Audit Expense Escrow
+                            - Capital Contribution Escrows
+                            - Main Fund 
+                            - Miscellaneous Escrows
+                            - MMA Special Reserve
+                            - Other Escrows
+                            - Partnership Escrow
+                            - Performance Deposits
+                            - Project Buyout Reserves
+                            - Rent Subsidy Reserves
+                            - Resident Service Reserve
+                            - Residual Receipts reserve
+                            - Social Service Reserve
+                            - Special Escrow
+                            - Transition Reserve                
+                    
+                        - Land
+                        - Fixed Assets
+                            - Building
+                            - Building Improvements
+                            - Building Equipment
+                            - Capital Expenditures
+                            - Capital Improvements
+                            - Computer Equipment/Software
+                            - Construction in Progress/Work in Progress
+                            - Furniture
+                            - Land Improvements
+                            - Maintenance Equipment
+                            - Motor Vehicles
+                            - Other Fixed Assets
+                            - Personal Property
+                            - Rehab Cost                
+                        - Accumulated Depreciation
+                            - Any type of Accumulated Depreciation
+                            
+                        - Other Assets
+                            - Accumulated Amortization
+                            - Capital Subscriptions
+                            - Compliance Monitoring Fees
+                            - Deferred Charges
+                            - Deferred Financing Costs, Net
+                            - Deferred Organization Costs, Net
+                            - Deposits Receivable
+                            - Exchange
+                            - Intangible Assets
+                            - Loan Costs
+                            - Miscellaneous Other Assets
+                            - Net Program Cost Congregate
+                            - Other Assets
+                            - Prepaid Loan Fees
+                            - Prepaid Land/Ground Lease
+                            - Refundable Deposits
+                            - Syndication Fee
+                            - Tax Credit Monitoring Fees
+                            - Title and Record Fee                            
+                    
+                    - ## Liabilities  Chart of Accounts (CoA)
+                        - Accounts Payable
+                            - Accounts Payable / AP-Trade
+                            - AP - Other Projects
+                            - HAP - Payable 
+                            - Intercompany Payable
+                                - If Payable or due to any company
+                                    - E.g. DuetoRichSmithManagement                
+                        - Accrued Property Taxes
+                            - Accrued Pilot
+                            - Accrued property taxes
+                            - Accrued Real Estate Taxes                
+                        - Other Accrued Expenses
+                            - Account Payable - HUD
+                            - Accrued Operating Expenses
+                            - Accrued Payroll and Wages
+                            - Accrued Wage and Payroll Tax
+                            - Other Accrued Liabilities
+                            - Project Control
+                            - State Franchise Tax Payable                
+                        - Tenant Security Deposits
+                            - Interest on Security deposit
+                            - Other Tenant Deposits
+                            - Pet Security Deposits
+                            - Tenant Security deposits                
+                        - Accrued Management Fees
+                            - Accrued Property Management Fees                
+                        - Prepaid Rent
+                            - Deferred Rent / Deferred Revenue
+                            - Prepaid Rent
+                            - Unearned Revenue                
+                        - Accrued Interest Payable
+                            - 1st Mortgage Accrued Interest Payable
+                            - 2nd Mortgage Accrued Interest Payable
+                            - 3rd Mortgage Accrued Interest Payable
+                            - 4th Mortgage Accrued Interest Payable
+                            - 5th  Mortgage Accrued Interest Payable                
+                        - Mortgage Notes Payable - Current Portion
+                            - 1st Mortgage Note Payable Current Portion
+                            - 2nd Mortgage Note Payable Current Portion
+                            - 3rd Mortgage Note Payable Current Portion
+                            - 4th Mortgage Note Payable Current Portion
+                            - 5th Mortgage Note Payable Current Portion
+                            - Converted Permanent Debt (former construction loan)                
+                        - Construction Payable
+                            - Construction Cost Payable
+                        - Miscellaneous Current Liabilities
+                            - Adjustments
+                            - Escheatment Liabilities
+                            - Insurance Payable
+                            - Miscellaneous Current Liabilities
+                            - Unclaimed Property                
+                        
+                        - Mortgage Notes Payable - Long Term
+                            - 1st Mortgage Note Payable
+                            - 2nd Mortgage Note Payable
+                            - 3rd Mortgage Note Payable
+                            - 4th Mortgage Note Payable
+                            - 5th Mortgage Note Payable
+                            - Bond Payable
+                            - Loans Payable MCTC
+                            - Permanent Loan                
+                        - Loan Issuance Costs (Net of Accum. Amort.)
+                            - Debt Issuance Costs
+                        - Construction Loan
+                            - Construction Loan Payable
+                        - Developer Fee Payable
+                            - Accrued Contractor Fee/Overhead
+                            - Accrued Interest on Developer Fee
+                            - Developer Fee Payable                
+                        - Development Advances
+                        - Project Expense Loans
+                            - Project Expense Loans
+                            - Advance from GP
+                            - Due to GP / Affiliate GP only                
+                        - Working Capital Loans
+                            - Working Capital Loans
+                            - Due to GP / Affiliate GP only              
+                        - Accrued Distributions Fees to ILPI
+                            - Accrued Asset Management Fee LP
+                            - Lend Lease Payments
+                            - Priority Distribution Payable
+                            - Due to Limited Partner                
+                        - Soft Debt Payable
+                            - Notes Payable (Long-Term)
+                            - Converted Permanent Debt (former Construction Loan)                
+                        - Accrued Soft Debt Interest
+                        - ILP Loans
+                            - Interest Bearing - Secured Notes Payable to LP
+                            - LP Deficit Funding - Non Interest Bearing - Unsecured
+                            - Accured Interest on Notes Payable to LP                
+                        - Other Long Term Liabilities
+                            - Accrued Monitoring fees
+                            - Accrued Partnership Fees General Partner
+                            - Asset Management Fee Payable
+                            - Contingent management fees
+                            - Deferred Management fees
+                            - Ground Lease
+                            - Incentive Management Fee
+                            - Interest Rate Swap Agreement
+                            - Investor Servicing Fee
+                            - Other Partnership Fees 
+                            - Partnership Management Fee
+                            - Subordinate Management Fees
+                            - Supervisory Management Fees 
+                            - Supplemental Management Fees                                
+                            - Other Long Term Liabilities
+                                - Liabilities that could not be mapped to other CoA
+                        
+                        - Limited Partners' Equity/(Deficiency)
+                        - Other Partners' Equity/(Deficiency)
+                            - General Partner's Equity
+                            - Other Partners' Equity / Deficiency
+                            - Special Limited Partner Equity                
+                        - Miscellaneous Equity/(Deficiency)
+                            - Current Year Earnings (Retained Earnings)
+                            - Miscellaneous Equity / Deficiency                
+                    
+
+                ## extracted Balance Sheet Text: 
+                    ```{extracted_text}```   
+
                 
-                - Mortgage Notes Payable - Long Term
-                    - 1st Mortgage Note Payable
-                    - 2nd Mortgage Note Payable
-                    - 3rd Mortgage Note Payable
-                    - 4th Mortgage Note Payable
-                    - 5th Mortgage Note Payable
-                    - Bond Payable
-                    - Loans Payable MCTC
-                    - Permanent Loan                
-                - Loan Issuance Costs (Net of Accum. Amort.)
-                    - Debt Issuance Costs
-                - Construction Loan
-                    - Construction Loan Payable
-                - Developer Fee Payable
-                    - Accrued Contractor Fee/Overhead
-                    - Accrued Interest on Developer Fee
-                    - Developer Fee Payable                
-                - Development Advances
-                - Project Expense Loans
-                    - Project Expense Loans
-                    - Advance from GP
-                    - Due to GP / Affiliate GP only                
-                - Working Capital Loans
-                    - Working Capital Loans
-                    - Due to GP / Affiliate GP only              
-                - Accrued Distributions Fees to ILPI
-                    - Accrued Asset Management Fee LP
-                    - Lend Lease Payments
-                    - Priority Distribution Payable
-                    - Due to Limited Partner                
-                - Soft Debt Payable
-                    - Notes Payable (Long-Term)
-                    - Converted Permanent Debt (former Construction Loan)                
-                - Accrued Soft Debt Interest
-                - ILP Loans
-                    - Interest Bearing - Secured Notes Payable to LP
-                    - LP Deficit Funding - Non Interest Bearing - Unsecured
-                    - Accured Interest on Notes Payable to LP                
-                - Other Long Term Liabilities
-                    - Accrued Monitoring fees
-                    - Accrued Partnership Fees General Partner
-                    - Asset Management Fee Payable
-                    - Contingent management fees
-                    - Deferred Management fees
-                    - Ground Lease
-                    - Incentive Management Fee
-                    - Interest Rate Swap Agreement
-                    - Investor Servicing Fee
-                    - Other Partnership Fees 
-                    - Partnership Management Fee
-                    - Subordinate Management Fees
-                    - Supervisory Management Fees 
-                    - Supplemental Management Fees                                
-                    - Other Long Term Liabilities
-                        - Liabilities that could not be mapped to other CoA
-                
-                - Limited Partners' Equity/(Deficiency)
-                - Other Partners' Equity/(Deficiency)
-                    - General Partner's Equity
-                    - Other Partners' Equity / Deficiency
-                    - Special Limited Partner Equity                
-                - Miscellaneous Equity/(Deficiency)
-                    - Current Year Earnings (Retained Earnings)
-                    - Miscellaneous Equity / Deficiency                
-            
-
-         ## extracted Balance Sheet Text: 
-            ```{extracted_text}```   
-
-         
-         ## Respond in the JSON format as described below for the given extracted document text, do not remove any json fields, even if the field is not present or does not have any value:
-               {json.dumps(balance_sheet_response_format, indent=2)}
+                ## Respond in the JSON format as described below for the given extracted document text, do not remove any json fields, even if the field is not present or does not have any value:
+                    {json.dumps(balance_sheet_response_format, indent=2)}
 
             '''
    return balance_sheet_user_prompt
