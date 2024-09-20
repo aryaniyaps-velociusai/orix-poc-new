@@ -92,11 +92,9 @@ async def generate_updated_prompt(original_prompt, user_modifications):
                 {
                     "role": "system",
                     "content": '''You are an assistant that helps with prompt modification and generation.
-                    Your task is to modify an original prompt with user-provided input.
-                    The changes should focus on updating specific data points requested by the user in the User Feedback.
-                    User Feedback takes precedence over Original prompt when mapping the field to a CoA.
+                    Your task is to modify an original prompt with user-provided input while keeping the same structure and type.
+                    The changes should focus on updating specific data points requested by the user.
                     The final result should be provided in JSON format, where the modified prompt is included.'''
-                    
                 },
                 {
                     "role": "user",
