@@ -8,11 +8,14 @@ from process_pdf_document import process_pdf_document
 from utils.s3_upload import upload_to_s3_generate_presigned_download_url
 from utils.json_to_xlsx import document_json_to_xlsx
 from utils.cosmos_db_op import create_record, get_item_by_id, update_item
+from utils.init_prompts import initialize_prompts
+from services.financial_prompt_updater import upsert_financial_items
+from utils.prompt import balance_sheet_prompt, income_statement_prompt
 import time
 
 app = FastAPI(
     title="Orix Operating Statement POC API",
-    version="0.1.2"
+    version="0.1.3"
 )
 
 app.add_middleware(
@@ -34,6 +37,10 @@ def save_file(file: UploadFile):
         return file_path
     except Exception as e:
         print('Exception occured while saving file locally', e) 
+
+@app.on_event("startup")
+async def startup_event():
+    await initialize_prompts()
 
 @app.get('/')
 async def root_path():
@@ -64,6 +71,22 @@ async def get_excel_from_document_json(request_body: Request):
     except Exception as e:
         return JSONResponse(content={"message": "An error occurred while processing the json to excel.", "error": str(e)}, status_code=500)
 
+@app.post("/api/upsert-user-feedback")
+async def upsert_user_feedback(request_body: Request):
+    try:
+        document_json = await request_body.json()
+        file_name = document_json['file_name']
+        timestamp = int(time.time())
+
+        await upsert_financial_items(document_json, balance_sheet_prompt, income_statement_prompt)
+
+
+        data = {
+            "message": "User feedback upserted Successfully!",
+        }
+        return JSONResponse(content=data, status_code=201)
+    except Exception as e:
+        return JSONResponse(content={"message": "An error occurred while upserting user feedback to DB.", "error": str(e)}, status_code=500)
 
 @app.post("/api/extract-pdf")
 async def process_pdf_task(file: UploadFile, background_tasks: BackgroundTasks):
