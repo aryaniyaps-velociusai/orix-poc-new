@@ -44,7 +44,7 @@ async def extract_data_openai(user_prompt):
     return openai_response, usage
 
 @log_execution_time_async
-async def extract_data_azure_openai(user_prompt):
+async def extract_data_azure_openai(user_prompt,extracted_text,user_feedback):
     client = AsyncAzureOpenAI(
         api_key=AZURE_OPENAI_API_KEY,
         azure_endpoint=AZURE_OPENAI_ENDPOINT,
@@ -58,8 +58,11 @@ async def extract_data_azure_openai(user_prompt):
         response_format={"type": "json_object"},
         temperature=0.2,
         messages=[
-            {"role": "system", "content": "You are a highly accurate accounting assistant skilled at processing Balance Sheet and/or Income Statement information from provided text data."},
-            {"role": "user", "content": user_prompt},
+            {"role": "system", "content": user_prompt},
+            {"role": "user", "content": f'''## extracted Balance Sheet Text: 
+                            ```{extracted_text}``` 
+                        Here there is a user feeback conider this also while extracting the data
+                            {user_feedback}'''  },
             # {"role": "user", "content":"If you are unable to map fields to a CoA, return list of such unmapped fields, give reasons for doing so, guidelines taken into consideration, additional instructions/guidelines required in additional json fields in the json output"}
         ]
     )
@@ -92,11 +95,9 @@ async def generate_updated_prompt(original_prompt, user_modifications):
                 {
                     "role": "system",
                     "content": '''You are an assistant that helps with prompt modification and generation.
-                    Your task is to modify an original prompt with user-provided input.
-                    The changes should focus on updating specific data points requested by the user in the User Feedback.
-                    User Feedback takes precedence over Original prompt when mapping the field to a CoA.
+                    Your task is to modify an original prompt with user-provided input while keeping the same structure and type.
+                    The changes should focus on updating specific data points requested by the user.
                     The final result should be provided in JSON format, where the modified prompt is included.'''
-                    
                 },
                 {
                     "role": "user",
