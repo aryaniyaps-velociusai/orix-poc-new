@@ -61,7 +61,7 @@ async def extract_data_azure_openai(user_prompt,extracted_text,user_feedback):
             {"role": "system", "content": user_prompt},
             {"role": "user", "content": f'''## extracted Balance Sheet Text: 
                             ```{extracted_text}``` 
-                        Here there is a user feeback conider this also while extracting the data
+                        Additionally, please consider the following user feedback while extracting the data:
                             {user_feedback}'''  },
             # {"role": "user", "content":"If you are unable to map fields to a CoA, return list of such unmapped fields, give reasons for doing so, guidelines taken into consideration, additional instructions/guidelines required in additional json fields in the json output"}
         ]
