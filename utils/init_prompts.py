@@ -8,7 +8,7 @@ from config import DefaultConfig
 
 CONFIG = DefaultConfig()
 
-CURRENT_PROMPT_VERSION = "v1"
+CURRENT_PROMPT_VERSION = "v1.01"
 
 NEW_BALANCE_SHEET_PROMPT = balance_sheet_prompt
 NEW_INCOME_STATEMENT_PROMPT = income_statement_prompt

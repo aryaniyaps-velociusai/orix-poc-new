@@ -44,7 +44,7 @@ async def extract_data_openai(user_prompt):
     return openai_response, usage
 
 @log_execution_time_async
-async def extract_data_azure_openai(user_prompt):
+async def extract_data_azure_openai(user_prompt,extracted_text,user_feedback):
     client = AsyncAzureOpenAI(
         api_key=AZURE_OPENAI_API_KEY,
         azure_endpoint=AZURE_OPENAI_ENDPOINT,
@@ -58,8 +58,11 @@ async def extract_data_azure_openai(user_prompt):
         response_format={"type": "json_object"},
         temperature=0.2,
         messages=[
-            {"role": "system", "content": "You are a highly accurate accounting assistant skilled at processing Balance Sheet and/or Income Statement information from provided text data."},
-            {"role": "user", "content": user_prompt},
+            {"role": "system", "content": user_prompt},
+            {"role": "user", "content": f'''## extracted Balance Sheet Text: 
+                            ```{extracted_text}``` 
+                        Additionally, please consider the following user feedback while extracting the data:
+                            {user_feedback}'''  },
             # {"role": "user", "content":"If you are unable to map fields to a CoA, return list of such unmapped fields, give reasons for doing so, guidelines taken into consideration, additional instructions/guidelines required in additional json fields in the json output"}
         ]
     )

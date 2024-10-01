@@ -148,8 +148,8 @@ async def process_pdf_document(pdf_path, task):
         balance_sheet_user_feedback = {} if financial_items["balance_sheet_user_feedback"] is None else financial_items["balance_sheet_user_feedback"]
 
         # get balance sheet
-        balance_sheet_user_prompt = get_balance_sheet_user_prompt(updated_balance_sheet_prompt, extracted_text)
-        balance_sheet_openai_response, _ = await extract_data_azure_openai(balance_sheet_user_prompt)
+        balance_sheet_user_prompt = get_balance_sheet_user_prompt(updated_balance_sheet_prompt)
+        balance_sheet_openai_response, _ = await extract_data_azure_openai(balance_sheet_user_prompt,extracted_text,balance_sheet_user_feedback)
 
         balance_sheet_json_response = json.loads(balance_sheet_openai_response)
 
@@ -161,8 +161,8 @@ async def process_pdf_document(pdf_path, task):
 
 
         # get income statement
-        income_statement_user_prompt = get_income_statement_user_prompt(updated_income_statement_prompt, extracted_text)
-        income_statement_openai_response, _ = await extract_data_azure_openai(income_statement_user_prompt)
+        income_statement_user_prompt = get_income_statement_user_prompt(updated_income_statement_prompt)
+        income_statement_openai_response, _ = await extract_data_azure_openai(income_statement_user_prompt,extracted_text,income_statement_user_feedback)
 
         income_statement_json_response = json.loads(income_statement_openai_response)
 

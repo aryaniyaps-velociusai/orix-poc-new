@@ -971,13 +971,12 @@ income_statement_prompt = f'''
 
 
 
-def get_balance_sheet_user_prompt(prompt, extracted_text):
+def get_balance_sheet_user_prompt(prompt):
    try:
-        balance_sheet_user_prompt = f'''          
+        balance_sheet_user_prompt = f'''
+                        You are a highly accurate accounting assistant skilled at processing Balance Sheet and/or Income Statement information from provided text data.         
                         {prompt}
 
-                        ## extracted Balance Sheet Text: 
-                            ```{extracted_text}```   
                         ## Respond in the JSON format as described below for the given extracted document text, do not remove any json fields, even if the field is not present or does not have any value:
                             {json.dumps(balance_sheet_response_format, indent=2)}
 
@@ -987,14 +986,11 @@ def get_balance_sheet_user_prompt(prompt, extracted_text):
        print(f"Error occured in : {get_balance_sheet_user_prompt.__name__} ", e)
        raise e
 
-def get_income_statement_user_prompt(prompt, extracted_text):
+def get_income_statement_user_prompt(prompt):
     try:
         income_statement_user_prompt = f'''
+                    You are a highly accurate accounting assistant skilled at processing Balance Sheet and/or Income Statement information from provided text data.
                     {prompt}
-
-                    ## extracted Income Statement Text: 
-                        ```{extracted_text}```   
-
                     
                     ## Respond in the JSON format as described below for the given extracted document text, do not remove any json fields, even if the field is not present or does not have any value:
                         {json.dumps(income_statement_response_format, indent=2)}
