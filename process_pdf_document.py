@@ -85,7 +85,7 @@ async def process_pdf_document(pdf_path, task):
         sorted_data_with_page_numbers = get_sorted_data_with_page_numbers(
             pdf_filename_without_extension=pdf_filename_without_extension, document_dict=document_dict)
 
-        PAGE_SEPARATOR = "\n\n"
+        PAGE_SEPARATOR = "\n==============================\n"
         extracted_text = ""
 
         # <!-- PdfDocumentPageNumber 7 -->

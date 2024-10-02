@@ -158,7 +158,7 @@ balance_sheet_prompt = f'''
                         - E.g. -15,786.78 will be -15786.78
                 - "pdf_document_page_number" is an integer value
                 - If any field is not mapped to any COA then output is an empty array
-            - ** pdf_document_page_number is a number present in the format "<!-- PdfDocumentPageNumber 7 -->" at the begining of each page
+            - ** pdf_document_page_number is a number present in the format "<!-- PdfDocumentPageNumber 7 -->" between two "==============================" lines at the begining of each page
             - ** If a value is surrounded by round paranthesis, then the value will be negative
                 - E.g. (14,876) will be -14,876
             - ** Balance Sheet: 
@@ -493,7 +493,7 @@ income_statement_prompt = f'''
                 - "field_label" is the label of the field
                 - "field_value" is the value of the extracted field which is a decimal value
                 - "pdf_document_page_number" is an integer value
-            - ** pdf_document_page_number is a number present in the format "<!-- PdfDocumentPageNumber 7 -->" at the begining of each page
+            - ** pdf_document_page_number is a number present in the format "<!-- PdfDocumentPageNumber 7 -->" between two "==============================" lines at the begining of each page
             - ** If a value is surrounded by round paranthesis, then the value will be negative
                 - E.g. (14,876) will be -14,876
             - ** Income Statement: 
