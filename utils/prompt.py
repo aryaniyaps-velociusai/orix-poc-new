@@ -158,7 +158,7 @@ balance_sheet_prompt = f'''
                         - E.g. -15,786.78 will be -15786.78
                 - "pdf_document_page_number" is an integer value
                 - If any field is not mapped to any COA then output is an empty array
-            - ** pdf_document_page_number is a number present in the format "<!-- PdfDocumentPageNumber 7 -->" at the begining of each page
+            - ** pdf_document_page_number is a number present in the format "<!-- PdfDocumentPageNumber 7 -->" between two "==============================" lines at the begining of each page
             - ** If a value is surrounded by round paranthesis, then the value will be negative
                 - E.g. (14,876) will be -14,876
             - ** Balance Sheet: 
@@ -180,7 +180,19 @@ balance_sheet_prompt = f'''
                 - ## Assets Chart of Accounts (CoA)      
                     - Cash
                         - Any Escrow values will not come under Cash
-                        - Do not map any field to the Cash CoA	
+                        - Only below categories is considered as Cash
+                            - Cash In Bank
+                            - CD's
+                            - Checking Account	
+                            - Investment Cash	
+                            - Investment Fund	
+                            - Money Market - Cash	
+                            - Month End Arrears	
+                            - Operating Account/Cash	
+                            - Partnership Checking - Owner Held	
+                            - Petty Cash
+                            - Rental Depository Account	
+                            - U.S. Bank Funds	
                     - Tenant Accounts Receivable
                         - A/R - Local Housing Authority
                         - A/R - PHA
@@ -195,6 +207,7 @@ balance_sheet_prompt = f'''
                         - Section 8 A/R
                         - Subsidies Receivable
                         - Subsidized Rent
+                        - Tenant Accounts Receivable
                         - Uncollected Rent
                     - Accounts Receivable Other
                         - A/R - Due from Affiliate
@@ -480,7 +493,7 @@ income_statement_prompt = f'''
                 - "field_label" is the label of the field
                 - "field_value" is the value of the extracted field which is a decimal value
                 - "pdf_document_page_number" is an integer value
-            - ** pdf_document_page_number is a number present in the format "<!-- PdfDocumentPageNumber 7 -->" at the begining of each page
+            - ** pdf_document_page_number is a number present in the format "<!-- PdfDocumentPageNumber 7 -->" between two "==============================" lines at the begining of each page
             - ** If a value is surrounded by round paranthesis, then the value will be negative
                 - E.g. (14,876) will be -14,876
             - ** Income Statement: 
@@ -546,8 +559,19 @@ income_statement_prompt = f'''
                 - Vacancy - Stores and Commercial                
                     - This item should be (-)
 
-            - Bad Debt       
-                - Do not map any field to Bad Debt CoA    
+            - Bad Debt
+                - Allowance for Bad Debt
+                - Bad Debt
+                - Collections Loss
+                - Collections or Reimbursements against Bad Debt
+                    - E.g. Bad Debt Collections
+                - Delinquent Rent
+                - Recovery of Bad Debt
+                - Bad Debt Recovery
+                - Rental Write Offs
+                - Tenant Uncollectibles
+                - Uncollected Rent
+                - Write Off Other Income                
             - Concessions
                 - Concessions
                     - Rent Concessions
