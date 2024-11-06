@@ -49,7 +49,7 @@ async def process_balance_sheet(container, data, balance_sheet_user_prompt):
 
         # Update the balance_sheet field with the new data
         data = filter_non_empty_feedback(data)
-        balance_sheet_item["user_feedback"] = data.get("balance_sheet", {})
+        balance_sheet_item["user_feedback"] = data.get("balance_sheet", {"liabilities": {}, "assets": {}})
         prompt = balance_sheet_user_prompt
 
         # Update the prompt asynchronously
@@ -78,7 +78,7 @@ async def process_income_statement(container, data, income_statement_user_prompt
 
         # Update the income_statement field with the new data
         data = filter_non_empty_feedback(data)
-        income_statement_item["user_feedback"] = data.get("income_statement", {})
+        income_statement_item["user_feedback"] = data.get("income_statement", {"revenue_income": {}, "expenses": {}})
         prompt = income_statement_user_prompt
 
         # Update the prompt asynchronously
