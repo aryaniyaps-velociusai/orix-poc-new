@@ -146,363 +146,380 @@ income_statement_response_format = {
 }
 
 
-
-def get_balance_sheet_user_prompt(extracted_text):
-   balance_sheet_user_prompt = f'''
-            Please process the extracted text for "Balance Sheet" for a property provided between triple backticks, ensuring below guidelines are followed strictly:
-               - ** Please Extract field values for Chart of Accounts (CoA) as per the guidelines mentioned for Balance Sheet.
-               - ** Your task is to map all fields from extracted text to any Chart of Accounts that is most similar or most related match
-                    - If you are unable to map any field to a CoA then search for CoA with most similar or most related match, All fields should be mapped
-               - ** Each CoA can have multiple fields mapped to it
-               - ** Output for each CoA is a list of fields in format ["field_label", "field_value", "pdf_document_page_number"]
-                    - "field_label" is the label of the field
-                    - "field_value" is the value of the field which is a decimal value without any comma
-                        - remove comma ',' from "field_value" if present
-                            - E.g. 72,598.08 will be 72598.08
-                            - E.g. -15,786.78 will be -15786.78
-                    - "pdf_document_page_number" is an integer value
-                    - If any field is not mapped to any COA then output is an empty array
-               - ** pdf_document_page_number is a number present in the format "<!-- PdfDocumentPageNumber 7 -->" at the begining of each page
-               - ** If a value is surrounded by round paranthesis, then the value will be negative
-                    - E.g. (14,876) will be -14,876
-               - ** Balance Sheet: 
-                    - Document title for Balance Sheet is labelled as Balance Sheet
-                    - Balance Sheet contains Assets and Liabilities
-                    - Classify the fields under Assets and liabilities as per the CoA mentioned for Balance Sheet
-                    - Any value from extracted text should be mapped to the field that matches the CoA
-                    - the output value for each CoA would be a list of values as per the JSON format
-               - ** If Balance Sheet is not present in the extracted text then balance_sheet key value will be 'null'
+balance_sheet_prompt = f'''
+        Please process the extracted text for "Balance Sheet" for a property provided between triple backticks, ensuring below guidelines are followed strictly:
+            - ** Please Extract field values for Chart of Accounts (CoA) as per the guidelines mentioned for Balance Sheet.
+            - ** Your task is to map all fields from extracted text to any Chart of Accounts that is most similar or most related match
+                - If you are unable to map any field to a CoA then search for CoA with most similar or most related match, All fields should be mapped
+            - ** Each CoA can have multiple fields mapped to it
+            - ** Output for each CoA is a list of fields in format ["field_label", "field_value", "pdf_document_page_number"]
+                - "field_label" is the label of the field
+                - "field_value" is the value of the field which is a decimal value without any comma
+                    - remove comma ',' from "field_value" if present
+                        - E.g. 72,598.08 will be 72598.08
+                        - E.g. -15,786.78 will be -15786.78
+                - "pdf_document_page_number" is an integer value
+                - If any field is not mapped to any COA then output is an empty array
+            - ** pdf_document_page_number is a number present in the format "<!-- PdfDocumentPageNumber 7 -->" between two "==============================" lines at the begining of each page
+            - ** If a value is surrounded by round paranthesis, then the value will be negative
+                - E.g. (14,876) will be -14,876
+            - ** Balance Sheet: 
+                - Document title for Balance Sheet is labelled as Balance Sheet
+                - Balance Sheet contains Assets and Liabilities
+                - Classify the fields under Assets and liabilities as per the CoA mentioned for Balance Sheet
+                - Any value from extracted text should be mapped to the field that matches the CoA
+                - the output value for each CoA would be a list of values as per the JSON format
+                - Do not extract fields from the extracted text which is sum of field values
+            - ** "pdf_subheader_category" is the subheader under which the field is present in the extracted text table
+                - subheader can be identified as cells that do not have any value against them
+                - any cells with value against them must be mapped to a CoA as per the balance sheet guidelines and it's not dependent on "pdf_subheader_category"
+                
+            - ** If Balance Sheet is not present in the extracted text then balance_sheet key value will be 'null'
 
 
                 ## Balance Sheet Document guidelines:
 
-                    - ## Assets Chart of Accounts (CoA)      
-                        - Cash
-                            - Any Escrow values will not come under Cash
-                            - Only below categories is considered as Cash
-                                - Cash In Bank
-                                - CD's
-                                - Checking Account	
-                                - Investment Cash	
-                                - Investment Fund	
-                                - Money Market - Cash	
-                                - Month End Arrears	
-                                - Operating Account/Cash	
-                                - Partnership Checking - Owner Held	
-                                - Petty Cash
-                                - Rental Depository Account	
-                                - U.S. Bank Funds	
+                - ## Assets Chart of Accounts (CoA)      
+                    - Cash
+                        - Any Escrow values will not come under Cash
+                        - Only below categories is considered as Cash
+                            - Cash In Bank
+                            - CD's
+                            - Checking Account	
+                            - Investment Cash	
+                            - Investment Fund	
+                            - Money Market - Cash	
+                            - Month End Arrears	
+                            - Operating Account/Cash	
+                            - Partnership Checking - Owner Held	
+                            - Petty Cash
+                            - Rental Depository Account	
+                            - U.S. Bank Funds	
+                    - Tenant Accounts Receivable
+                        - A/R - Local Housing Authority
+                        - A/R - PHA
+                        - A/R- Residents
+                        - Allowance for Doubtful Accounts
+                            - This should be (-) and reduce Tenant Accounts Receivable
+                        - Bad Debt Allowance
+                            - This should be (-) and reduce Tenant Accounts Receivable
+                        - HAP Receivable
+                        - HUD Receivable
+                        - Rent Receivable 
+                        - Section 8 A/R
+                        - Subsidies Receivable
+                        - Subsidized Rent
                         - Tenant Accounts Receivable
-                            - A/R - Local Housing Authority
-                            - A/R - PHA
-                            - A/R- Residents
-                            - Allowance for Doubtful Accounts
-                                - This should be (-) and reduce Tenant Accounts Receivable
-                            - Bad Debt Allowance
-                                - This should be (-) and reduce Tenant Accounts Receivable
-                            - HAP Receivable
-                            - HUD Receivable
-                            - Rent Receivable 
-                            - Section 8 A/R
-                            - Subsidies Receivable
-                            - Subsidized Rent
-                            - Tenant Accounts Receivable
-                            - Uncollected Rent
+                        - Uncollected Rent
+                    - Accounts Receivable Other
+                        - A/R - Due from Affiliate
                         - Accounts Receivable Other
-                            - A/R - Due from Affiliate
-                            - Accounts Receivable Other
-                            - Clearing Account
-                            - Due from Other Company
-                            - Intercompany Receivable
-                            - Owner Receivables
-                            - Partnership Contribution Receivables
-                            - Repayment Agreement
-                            - TIF Receivable
+                        - Clearing Account
+                        - Due from Other Company
+                        - Intercompany Receivable
+                        - Owner Receivables
+                        - Partnership Contribution Receivables
+                        - Repayment Agreement
+                        - TIF Receivable
+                    - Tenant Security Deposits
+                        - Cash - Security
+                        - Interest on Security deposit
+                        - Key Deposit
+                        - Other Tenant Deposits
+                        - Pet Security Deposits
                         - Tenant Security Deposits
-                            - Cash - Security
-                            - Interest on Security deposit
-                            - Key Deposit
-                            - Other Tenant Deposits
-                            - Pet Security Deposits
-                            - Tenant Security Deposits
-                        - Prepaid Property Insurances
-                            - Prepaid Insurance
-                            - Prepaid Insurance - Earthquake
-                            - Prepaid Property Insurance
-                        - Other Prepaid Expenses
-                            - Prepaid Expenses Other
-                            - Prepaid Insurance Other
-                            - Prepaid Mortgage Insurance
-                            - Prepaid Real Estate Taxes
-                            - Prepaid Rent
-                        - Miscellaneous Current Assets
-                            - Account Revenue Other Than Rent
-                            - Insurance Claims
-                            - Investment Short Term
-                            - Misc Current Assets
-                            - Notes Receivable
-                            - Payroll Deposits
-                            - Short Term Borrowing
-                            - Utility Deposit 
-                    
-                        - Real Estate Taxes and Insurance Escrow
-                            - Impounds
-                            - Insurance Escrow
-                            - Escrow Insurance
-                            - MIP Escrow
-                            - Mortgage Reserve
-                            - Mortgagee Escrow Deposits
-                            - Reserve for Insurance
-                            - Reserve Hazard Insurance
-                            - RTO Escrow
-                            - Tax Rscrow
-                            - Trustee - Mortgage
-                            - Trustee - Tax & Insurance
-                        - Reserve for Replacement
-                            - EUR Reserves
-                            - Painting Reserve
-                            - Repair and Improvement Escrow
-                            - Reserve CD
-                            - Reserve Deposits
-                            - Reserve For Replacements
-                            - Tenant Improvement escrows
-                            - Trustee - Replacement                
-                        - Operating Deficit Reserve
-                            - Operating Reserve                
-                            - Operating Deficit Reserve
-                        - Bond Escrow
-                            - Bond Escrows
-                            - Debt Service Reserve
-                            - Principal Reserve
-                            - Revenue Fund
-                            - Interest Fund
-                            - Sinking Fund
-                            - Trust - Bond Fund
-                            - Trust - Interest/Admin Expense
-                            - Trust - Principal
-                            - Trustee Escrow                
-                        - Construction Escrow
-                            - Development Escrow
-                            - Construction Escrow                
-                        - Miscellaneous Escrows
-                            - Audit Expense Escrow
-                            - Capital Contribution Escrows
-                            - Main Fund 
-                            - Miscellaneous Escrows
-                            - MMA Special Reserve
-                            - Other Escrows
-                            - Partnership Escrow
-                            - Performance Deposits
-                            - Project Buyout Reserves
-                            - Rent Subsidy Reserves
-                            - Resident Service Reserve
-                            - Residual Receipts reserve
-                            - Social Service Reserve
-                            - Special Escrow
-                            - Transition Reserve                
-                    
-                        - Land
-                        - Fixed Assets
-                            - Building
-                            - Building Improvements
-                            - Building Equipment
-                            - Capital Expenditures
-                            - Capital Improvements
-                            - Computer Equipment/Software
-                            - Construction in Progress/Work in Progress
-                            - Furniture
-                            - Land Improvements
-                            - Maintenance Equipment
-                            - Motor Vehicles
-                            - Other Fixed Assets
-                            - Personal Property
-                            - Rehab Cost                
-                        - Accumulated Depreciation
-                            - Any type of Accumulated Depreciation
-                            
-                        - Other Assets
-                            - Accumulated Amortization
-                            - Capital Subscriptions
-                            - Compliance Monitoring Fees
-                            - Deferred Charges
-                            - Deferred Financing Costs, Net
-                            - Deferred Organization Costs, Net
-                            - Deposits Receivable
-                            - Exchange
-                            - Intangible Assets
-                            - Loan Costs
-                            - Miscellaneous Other Assets
-                            - Net Program Cost Congregate
-                            - Other Assets
-                            - Prepaid Loan Fees
-                            - Prepaid Land/Ground Lease
-                            - Refundable Deposits
-                            - Syndication Fee
-                            - Tax Credit Monitoring Fees
-                            - Title and Record Fee                            
-                    
-                    - ## Liabilities  Chart of Accounts (CoA)
-                        - Accounts Payable
-                            - Accounts Payable / AP-Trade
-                            - AP - Other Projects
-                            - HAP - Payable 
-                            - Intercompany Payable
-                                - If Payable or due to any company
-                                    - E.g. DuetoRichSmithManagement                
-                        - Accrued Property Taxes
-                            - Accrued Pilot
-                            - Accrued property taxes
-                            - Accrued Real Estate Taxes                
-                        - Other Accrued Expenses
-                            - Account Payable - HUD
-                            - Accrued Operating Expenses
-                            - Accrued Payroll and Wages
-                            - Accrued Wage and Payroll Tax
-                            - Other Accrued Liabilities
-                            - Project Control
-                            - State Franchise Tax Payable                
-                        - Tenant Security Deposits
-                            - Interest on Security deposit
-                            - Other Tenant Deposits
-                            - Pet Security Deposits
-                            - Tenant Security deposits                
-                        - Accrued Management Fees
-                            - Accrued Property Management Fees                
+                    - Prepaid Property Insurances
+                        - Prepaid Insurance
+                        - Prepaid Insurance - Earthquake
+                        - Prepaid Property Insurance
+                    - Other Prepaid Expenses
+                        - Prepaid Expenses Other
+                        - Prepaid Insurance Other
+                        - Prepaid Mortgage Insurance
+                        - Prepaid Real Estate Taxes
                         - Prepaid Rent
-                            - Deferred Rent / Deferred Revenue
-                            - Prepaid Rent
-                            - Unearned Revenue                
-                        - Accrued Interest Payable
-                            - 1st Mortgage Accrued Interest Payable
-                            - 2nd Mortgage Accrued Interest Payable
-                            - 3rd Mortgage Accrued Interest Payable
-                            - 4th Mortgage Accrued Interest Payable
-                            - 5th  Mortgage Accrued Interest Payable                
-                        - Mortgage Notes Payable - Current Portion
-                            - 1st Mortgage Note Payable Current Portion
-                            - 2nd Mortgage Note Payable Current Portion
-                            - 3rd Mortgage Note Payable Current Portion
-                            - 4th Mortgage Note Payable Current Portion
-                            - 5th Mortgage Note Payable Current Portion
-                            - Converted Permanent Debt (former construction loan)                
-                        - Construction Payable
-                            - Construction Cost Payable
-                        - Miscellaneous Current Liabilities
-                            - Adjustments
-                            - Escheatment Liabilities
-                            - Insurance Payable
-                            - Miscellaneous Current Liabilities
-                            - Unclaimed Property                
-                        
-                        - Mortgage Notes Payable - Long Term
-                            - 1st Mortgage Note Payable
-                            - 2nd Mortgage Note Payable
-                            - 3rd Mortgage Note Payable
-                            - 4th Mortgage Note Payable
-                            - 5th Mortgage Note Payable
-                            - Bond Payable
-                            - Loans Payable MCTC
-                            - Permanent Loan                
-                        - Loan Issuance Costs (Net of Accum. Amort.)
-                            - Debt Issuance Costs
-                        - Construction Loan
-                            - Construction Loan Payable
-                        - Developer Fee Payable
-                            - Accrued Contractor Fee/Overhead
-                            - Accrued Interest on Developer Fee
-                            - Developer Fee Payable                
-                        - Development Advances
-                        - Project Expense Loans
-                            - Project Expense Loans
-                            - Advance from GP
-                            - Due to GP / Affiliate GP only                
-                        - Working Capital Loans
-                            - Working Capital Loans
-                            - Due to GP / Affiliate GP only              
-                        - Accrued Distributions Fees to ILPI
-                            - Accrued Asset Management Fee LP
-                            - Lend Lease Payments
-                            - Priority Distribution Payable
-                            - Due to Limited Partner                
-                        - Soft Debt Payable
-                            - Notes Payable (Long-Term)
-                            - Converted Permanent Debt (former Construction Loan)                
-                        - Accrued Soft Debt Interest
-                        - ILP Loans
-                            - Interest Bearing - Secured Notes Payable to LP
-                            - LP Deficit Funding - Non Interest Bearing - Unsecured
-                            - Accured Interest on Notes Payable to LP                
-                        - Other Long Term Liabilities
-                            - Accrued Monitoring fees
-                            - Accrued Partnership Fees General Partner
-                            - Asset Management Fee Payable
-                            - Contingent management fees
-                            - Deferred Management fees
-                            - Ground Lease
-                            - Incentive Management Fee
-                            - Interest Rate Swap Agreement
-                            - Investor Servicing Fee
-                            - Other Partnership Fees 
-                            - Partnership Management Fee
-                            - Subordinate Management Fees
-                            - Supervisory Management Fees 
-                            - Supplemental Management Fees                                
-                            - Other Long Term Liabilities
-                                - Liabilities that could not be mapped to other CoA
-                        
-                        - Limited Partners' Equity/(Deficiency)
-                        - Other Partners' Equity/(Deficiency)
-                            - General Partner's Equity
-                            - Other Partners' Equity / Deficiency
-                            - Special Limited Partner Equity                
-                        - Miscellaneous Equity/(Deficiency)
-                            - Current Year Earnings (Retained Earnings)
-                            - Miscellaneous Equity / Deficiency                
-                    
-
-                ## extracted Balance Sheet Text: 
-                    ```{extracted_text}```   
-
+                    - Miscellaneous Current Assets
+                        - Account Revenue Other Than Rent
+                        - Insurance Claims
+                        - Investment Short Term
+                        - Misc Current Assets
+                        - Notes Receivable
+                        - Payroll Deposits
+                        - Short Term Borrowing
+                        - Utility Deposit 
+                            - Deposits of Utilities
                 
-                ## Respond in the JSON format as described below for the given extracted document text, do not remove any json fields, even if the field is not present or does not have any value:
-                    {json.dumps(balance_sheet_response_format, indent=2)}
+                    - Real Estate Taxes and Insurance Escrow
+                        - Impounds
+                        - Insurance Escrow
+                        - Escrow Insurance
+                        - MIP Escrow
+                        - Mortgage Reserve
+                        - Mortgagee Escrow Deposits
+                        - Reserve for Insurance
+                        - Reserve Hazard Insurance
+                        - RTO Escrow
+                        - Tax Rscrow
+                        - Trustee - Mortgage
+                        - Trustee - Tax & Insurance
+                    - Reserve for Replacement
+                        - EUR Reserves
+                        - Painting Reserve
+                        - Repair and Improvement Escrow
+                        - Reserve CD
+                        - Reserve Deposits
+                        - Reserve For Replacements
+                        - Tenant Improvement escrows
+                        - Trustee - Replacement                
+                    - Operating Deficit Reserve
+                        - Operating Reserve                
+                        - Operating Deficit Reserve
+                    - Bond Escrow
+                        - Bond Escrows
+                        - Debt Service Reserve
+                        - Principal Reserve
+                        - Revenue Fund
+                        - Interest Fund
+                        - Sinking Fund
+                        - Trust - Bond Fund
+                        - Trust - Interest/Admin Expense
+                        - Trust - Principal
+                        - Trustee Escrow                
+                    - Construction Escrow
+                        - Development Escrow
+                        - Construction Escrow                
+                    - Miscellaneous Escrows
+                        - Audit Expense Escrow
+                        - Capital Contribution Escrows
+                        - Main Fund 
+                        - Miscellaneous Escrows
+                        - MMA Special Reserve
+                        - Other Escrows
+                        - Partnership Escrow
+                        - Performance Deposits
+                        - Project Buyout Reserves
+                        - Rent Subsidy Reserves
+                        - Resident Service Reserve
+                        - Residual Receipts reserve
+                        - Social Service Reserve
+                        - Special Escrow
+                        - Transition Reserve                
+                
+                    - Land
+                    - Fixed Assets
+                        - Building
+                        - Building Improvements
+                        - Building Equipment
+                        - Capital Expenditures
+                        - Capital Improvements
+                        - Computer Equipment/Software
+                        - Construction in Progress/Work in Progress
+                        - Furniture
+                        - Land Improvements
+                        - Maintenance Equipment
+                        - Motor Vehicles
+                        - Other Fixed Assets
+                        - Personal Property
+                        - Rehab Cost                
+                    - Accumulated Depreciation
+                        - Any type of Accumulated Depreciation
+                        
+                    - Other Assets
+                        - Accumulated Amortization
+                        - Capital Subscriptions
+                        - Compliance Monitoring Fees
+                        - Deferred Charges
+                        - Deferred Financing Costs, Net
+                        - Deferred Organization Costs, Net
+                        - Deposits Receivable
+                        - Exchange
+                        - Intangible Assets
+                        - Loan Costs
+                        - Miscellaneous Other Assets
+                        - Net Program Cost Congregate
+                        - Other Assets
+                        - Prepaid Loan Fees
+                        - Prepaid Land/Ground Lease
+                        - Refundable Deposits
+                        - Syndication Fee
+                        - Tax Credit Monitoring Fees
+                        - Title and Record Fee                            
+                
+                - ## Liabilities  Chart of Accounts (CoA)
+                    - Accounts Payable
+                        - Accounts Payable / AP-Trade
+                        - AP - Other Projects
+                        - HAP - Payable 
+                        - Intercompany Payable
+                            - If Payable or due to any company
+                        - Due to company_name Management
+                            - E.g. Due to RichSmith Management              
+                    - Accrued Property Taxes
+                        - Accrued Pilot
+                        - Accrued property taxes
+                        - Accrued Real Estate Taxes                
+                    - Other Accrued Expenses
+                        - Account Payable - HUD
+                        - Accrued Operating Expenses
+                        - Accrued Payroll and Wages
+                        - Accrued Wage and Payroll Tax
+                        - Other Accrued Liabilities
+                        - Project Control
+                        - State Franchise Tax Payable  
+                    - Tenant Security Deposits
+                        - Interest on Security deposit
+                        - Other Tenant Deposits
+                        - Pet Security Deposits
+                        - Tenant Security deposits                
+                    - Accrued Management Fees
+                        - Accrued Property Management Fees
+                        - Any Type of Accrued Management Fees
+                            - Accrued Asset Management Fees
+                        - Due to Management Company
+                            - Due to Any Management Company
+                                - E.g. Due to company_name Management, where company name can be any company name                
+                    - Prepaid Rent
+                        - Deferred Rent / Deferred Revenue
+                        - Unearned Revenue
+                        - Unearned Income               
+                        - Prepaid Rent
+                    - Accrued Interest Payable
+                        - 1st Mortgage Accrued Interest Payable
+                        - 2nd Mortgage Accrued Interest Payable
+                        - 3rd Mortgage Accrued Interest Payable
+                        - 4th Mortgage Accrued Interest Payable
+                        - 5th  Mortgage Accrued Interest Payable
+                        - Any kind of Accrued Interest
+                            - E.g. Accrued Interest Mortgage                
+                    - Mortgage Notes Payable - Current Portion
+                        - 1st Mortgage Note Payable Current Portion
+                        - 2nd Mortgage Note Payable Current Portion
+                        - 3rd Mortgage Note Payable Current Portion
+                        - 4th Mortgage Note Payable Current Portion
+                        - 5th Mortgage Note Payable Current Portion
+                        - Converted Permanent Debt (former construction loan)
+                        - Any type of Mortgage Payable                
+                    - Construction Payable
+                        - Construction Cost Payable
+                    - Miscellaneous Current Liabilities
+                        - Adjustments
+                        - Escheatment Liabilities
+                        - Insurance Payable
+                        - Miscellaneous Current Liabilities
+                            - Current Liabilities that could not be mapped to other CoA
+                        - Unclaimed Property                
+                    
+                    - Mortgage Notes Payable - Long Term
+                        - 1st Mortgage Note Payable
+                        - 2nd Mortgage Note Payable
+                        - 3rd Mortgage Note Payable
+                        - 4th Mortgage Note Payable
+                        - 5th Mortgage Note Payable
+                        - Bond Payable
+                        - Loans Payable MCTC
+                        - Permanent Loan                
+                    - Loan Issuance Costs (Net of Accum. Amort.)
+                        - Debt Issuance Costs
+                    - Construction Loan
+                        - Construction Loan Payable
+                    - Developer Fee Payable
+                        - Accrued Contractor Fee/Overhead
+                        - Accrued Interest on Developer Fee
+                        - Developer Fee Payable                
+                        - Development Fee Payable                
+                    - Development Advances
+                    - Project Expense Loans
+                        - Project Expense Loans
+                        - Advance from GP
+                        - Due to GP / Affiliate GP only
+                            - Due to GP Affiliates                
+                    - Working Capital Loans
+                        - Working Capital Loans
+                        - Due to GP / Affiliate GP only              
+                    - Accrued Distributions Fees to ILPI
+                        - Accrued Asset Management Fee LP
+                        - Lend Lease Payments
+                        - Priority Distribution Payable
+                        - Due to Limited Partner                
+                    - Soft Debt Payable
+                        - Notes Payable (Long-Term)
+                        - Converted Permanent Debt (former Construction Loan)                
+                    - Accrued Soft Debt Interest
+                    - ILP Loans
+                        - Interest Bearing - Secured Notes Payable to LP
+                        - LP Deficit Funding - Non Interest Bearing - Unsecured
+                        - Accured Interest on Notes Payable to LP                
+                    - Other Long Term Liabilities
+                        - Accrued Monitoring fees
+                        - Accrued Partnership Fees General Partner
+                        - Asset Management Fee Payable
+                        - Contingent management fees
+                        - Deferred Management fees
+                        - Ground Lease
+                        - Incentive Management Fee
+                        - Interest Rate Swap Agreement
+                        - Investor Servicing Fee
+                        - Other Partnership Fees 
+                        - Partnership Management Fee
+                        - Subordinate Management Fees
+                        - Supervisory Management Fees 
+                        - Supplemental Management Fees                                
+                        - Other Long Term Liabilities
+                            - Liabilities that could not be mapped to other CoA
+                    
+                    - Limited Partners' Equity / (Deficiency)
+                        - Owner Equity
+                        - Limited Partner Equity
+                    - Other Partners' Equity / (Deficiency)
+                        - General Partner's Equity
+                        - Other Partners' Equity / Deficiency
+                        - Special Limited Partner Equity
+                        - Any type of Partner Distributions
+                        - Capital Contributions               
+                    - Miscellaneous Equity/(Deficiency)
+                        - Current Year Earnings (Retained Earnings)
+                        - Current Period Earnings
+                        - Miscellaneous Equity / Deficiency
+                            - Equity / Deficiency that could not be mapped to other Equity / Deficiency CoA                
 
-            '''
-   return balance_sheet_user_prompt
+        '''
 
-def get_income_statement_user_prompt(extracted_text):
-   income_statement_user_prompt = f'''
-            Please process the extracted text for Income Statement" for a property provided between triple backticks, ensuring below guidelines are followed strictly:
-               - ** Please Extract field values for Chart of Accounts (CoA) as per the guidelines mentioned for Income Statement.
-               - ** Your task is to map all fields from extracted text to any Chart of Accounts that is most similar or most related match
-                    - If you are unable to map any field to a CoA then search for CoA with most similar or most related match, All fields should be mapped
-               - ** Each CoA can have multiple unique fields mapped to it
-               - ** Output for each CoA is a list of fields in format ["field_label", "field_value", "pdf_document_page_number"]
-                    - "field_label" is the label of the field
-                    - "field_value" is the value of the extracted field which is a decimal value
-                    - "pdf_document_page_number" is an integer value
-               - ** pdf_document_page_number is a number present in the format "<!-- PdfDocumentPageNumber 7 -->" at the begining of each page
-               - ** If a value is surrounded by round paranthesis, then the value will be negative
-                    - E.g. (14,876) will be -14,876
-               - ** Income Statement: 
-                    - Document title for Income Statement could be labelled as Income Statement, Profit & Loss
-                    - Income Statement contains Income / Revenue and Expenses
-                    - Classify the fields under Assets and liabilities as per the CoA mentioned for Income Statement
-                    - Any value from extracted text should be mapped to the field that matches the CoA
-                    - Income Statement values should be extracted from Year to Date column
-                    - All Actual Year to Date values should be extracted and no values should be skipped
-                    - "Net Income" field denotes the end of Income Statement
-                    - If you were unable to extract any value for either of the following fields from Income Statement, then extract the value from Property Status Update Form, the value extracted from income statement takes precedence if it's not empty
-                        - Total YTD Hard Debt INTEREST Expense
-                        - Total YTD Hard Debt PRINCIPAL Payments
-                        - Total YTD Required Replacement Reserve Deposits (excluding interest)
-                        - Total YTD Replacement Reserve Withdrawals
-               - ** If Income Statement is not present in the extracted text then income_statement key will be 'null'
-               - ** "pdf_subheader_category" is the subheader under which the field is present in the extracted text table
-                        - subheader can be identified as cells that do not have any value against them
-                        - "pdf_subheader_category" can only be either "income" or "expenses"
-                        - any cells with value against them must be mapped to a CoA as per the income statement guidelines and it's not dependent on "pdf_subheader_category"
-               - ** Any field must only be mapped once to a CoA
+
+income_statement_prompt = f'''
+        Please process the extracted text for Income Statement" for a property provided between triple backticks, ensuring below guidelines are followed strictly:
+            - ** Please Extract field values for Chart of Accounts (CoA) as per the guidelines mentioned for Income Statement.
+            - ** Your task is to map all fields from extracted text to any Chart of Accounts that is most similar or most related match
+                - If you are unable to map any field to a CoA then search for CoA with most similar or most related match, All fields should be mapped
+            - ** Each CoA can have multiple unique fields mapped to it
+            - ** Output for each CoA is a list of fields in format ["field_label", "field_value", "pdf_document_page_number"]
+                - "field_label" is the label of the field
+                - "field_value" is the value of the extracted field which is a decimal value
+                - "pdf_document_page_number" is an integer value
+            - ** pdf_document_page_number is a number present in the format "<!-- PdfDocumentPageNumber 7 -->" between two "==============================" lines at the begining of each page
+            - ** If a value is surrounded by round paranthesis, then the value will be negative
+                - E.g. (14,876) will be -14,876
+            - ** Income Statement: 
+                - Document title for Income Statement could be labelled as Income Statement, Profit & Loss
+                - Income Statement contains Income / Revenue and Expenses
+                - Classify the fields under Assets and liabilities as per the CoA mentioned for Income Statement
+                - Any value from extracted text should be mapped to the field that matches the CoA
+                - Income Statement values should be extracted from Year to Date column
+                - All Actual Year to Date values should be extracted and no values should be skipped
+                    - Extracted field_value for a field value should be an Actual Year to Date value i.e. in the Year to Date Column
+                - "Net Income" field denotes the end of Income Statement
+                - If you were unable to extract any value for either of the following fields from Income Statement, then extract the value from Property Status Update Form, the value extracted from income statement takes precedence if it's not empty
+                    - Total YTD Hard Debt INTEREST Expense
+                    - Total YTD Hard Debt PRINCIPAL Payments
+                    - Total YTD Required Replacement Reserve Deposits (excluding interest)
+                    - Total YTD Replacement Reserve Withdrawals
+            - ** If Income Statement is not present in the extracted text then income_statement key will be 'null'
+            - ** "pdf_subheader_category" is the subheader under which the field is present in the extracted text table
+                    - subheader can be identified as cells that do not have any value against them
+                    - "pdf_subheader_category" can only be either "income" or "expenses"
+                        - "expenses" or "losses" subheaders are considered as "expenses"
+                        - "revenue" or "income" subheaders are considered as "income"
+                    - any fields with Actual Year to Date value against them must be mapped to a CoA as per the income statement guidelines and it's not dependent on "pdf_subheader_category"
+            - ** Any field must only be mapped once to a CoA
 
 
          ## Income Statement guidelines:
@@ -942,12 +959,33 @@ def get_income_statement_user_prompt(extracted_text):
                 - ILP Fund Advances
                 - Other Cash Flow Adjustments
 
-         ## extracted Income Statement Text: 
-            ```{extracted_text}```   
+        '''
 
-         
-         ## Respond in the JSON format as described below for the given extracted document text, do not remove any json fields, even if the field is not present or does not have any value:
-               {json.dumps(income_statement_response_format, indent=2)}
+
+
+def get_balance_sheet_user_prompt(prompt):
+   try:
+        balance_sheet_user_prompt = f'''
+                        You are a highly accurate accounting assistant skilled at processing Balance Sheet and/or Income Statement information from provided text data.         
+                        {prompt}
+
+                        ## Respond in the JSON format as described below for the given extracted document text, do not remove any json fields, even if the field is not present or does not have any value:
+                            {json.dumps(balance_sheet_response_format, indent=2)}
+
+                    '''
+        return balance_sheet_user_prompt
+   except Exception as e:
+       print(f"Error occured in : {get_balance_sheet_user_prompt.__name__} ", e)
+       raise e
+
+def get_income_statement_user_prompt(prompt):
+    try:
+        income_statement_user_prompt = f'''
+                    You are a highly accurate accounting assistant skilled at processing Balance Sheet and/or Income Statement information from provided text data.
+                    {prompt}
+                    
+                    ## Respond in the JSON format as described below for the given extracted document text, do not remove any json fields, even if the field is not present or does not have any value:
+                        {json.dumps(income_statement_response_format, indent=2)}
 
             '''
    return income_statement_user_prompt
