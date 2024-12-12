@@ -158,7 +158,10 @@ balance_sheet_prompt = f'''
                         - E.g. -15,786.78 will be -15786.78
                 - "pdf_document_page_number" is an integer value
                 - If any field is not mapped to any COA then output is an empty array
-            - ** pdf_document_page_number is a number present in the format "<!-- PdfDocumentPageNumber 7 -->" between two "==============================" lines at the begining of each page
+            - ** pdf_document_page_number is a number present in the format "<!-- PdfDocumentPageNumber 'pdf_document_page_number' -->" between two "==============================" lines at the begining of each page
+                - pdf_document_page_number must be the page number where both 'field_label' and 'field_value' are present
+                - do not fabricate pdf_document_page_number, extract pdf_document_page_number from the mentioned format
+                - do not take pdf_document_page_number from the bottom of the page
             - ** If a value is surrounded by round paranthesis, then the value will be negative
                 - E.g. (14,876) will be -14,876
             - ** Balance Sheet: 

@@ -6,6 +6,7 @@ import os
 from dotenv import load_dotenv
 import fitz
 
+from services.azure_ocr import get_text_from_pdf_with_doc_intelligence
 from services.response_formatter import format_os_response
 from utils.calculate_totals import calculate_totals
 from utils.common import get_filename_without_extension, create_subfolders
@@ -63,50 +64,52 @@ async def process_pdf_document(pdf_path, task):
         logger.info(f'Filename: {pdf_filename_without_extension}')
 
         logger.info('2. OCR Started ####')
-        output_folder_path = "./output_images_folder"
+        # output_folder_path = "./output_images_folder"
 
-        document_dict = None
+        # document_dict = None
 
-        pickle_file_path = f'azure_pickles/{pdf_filename_without_extension}.pickle'
+        # pickle_file_path = f'azure_pickles/{pdf_filename_without_extension}.pickle'
 
-        create_subfolders(pickle_file_path)
+        # create_subfolders(pickle_file_path)
 
 
-        if not os.path.exists(output_folder_path):
-            os.makedirs(output_folder_path)
+        # if not os.path.exists(output_folder_path):
+        #     os.makedirs(output_folder_path)
 
-        if not os.path.exists(pickle_file_path):
-            document_dict = await process_and_extract_document(input_file_path=pdf_path, folder_path=output_folder_path)
-        else:
-            logger.debug(f'Extracted Textract Document already exists for file: {pdf_filename_without_extension} ')
+        # if not os.path.exists(pickle_file_path):
+        #     document_dict = await process_and_extract_document(input_file_path=pdf_path, folder_path=output_folder_path)
+        # else:
+        #     logger.debug(f'Extracted Textract Document already exists for file: {pdf_filename_without_extension} ')
 
-        clear_folder(output_folder_path)
+        # clear_folder(output_folder_path)
 
-        sorted_data_with_page_numbers = get_sorted_data_with_page_numbers(
-            pdf_filename_without_extension=pdf_filename_without_extension, document_dict=document_dict)
+        # sorted_data_with_page_numbers = get_sorted_data_with_page_numbers(
+        #     pdf_filename_without_extension=pdf_filename_without_extension, document_dict=document_dict)
 
-        PAGE_SEPARATOR = "\n==============================\n"
-        extracted_text = ""
+        # PAGE_SEPARATOR = "\n\n"
+        # extracted_text = ""
 
-        # <!-- PdfDocumentPageNumber 7 -->
-        for page_no, document in sorted_data_with_page_numbers:
-                extracted_text += PAGE_SEPARATOR
-                extracted_text += f"<!-- PdfDocumentPageNumber {page_no} -->"
-                extracted_text += PAGE_SEPARATOR
-                extracted_text += document.content
-                extracted_text += "\n"
-            # logger.info(extracted_text)
-        # print(extracted_text)
-        with open(f"textract_response_output/layout_text_response_{pdf_filename_without_extension}.md", "w", encoding="utf-8") as file:
-            file.write(extracted_text)
+        # # <!-- PdfDocumentPageNumber 7 -->
+        # for page_no, document in sorted_data_with_page_numbers:
+        #         extracted_text += PAGE_SEPARATOR
+        #         extracted_text += f"<!-- PdfDocumentPageNumber {page_no} -->"
+        #         extracted_text += PAGE_SEPARATOR
+        #         extracted_text += document.content
+        #         extracted_text += "\n"
+        #     # logger.info(extracted_text)
+        # # print(extracted_text)
+        # with open(f"textract_response_output/layout_text_response_{pdf_filename_without_extension}.md", "w", encoding="utf-8") as file:
+        #     file.write(extracted_text)
 
-        azure_ocr_json_response = {"azure_ocr_pages_response": {}}
-        for page_num, document in sorted_data_with_page_numbers:
-            azure_ocr_json_response['azure_ocr_pages_response'][str(page_num)] = document.as_dict()
+        # azure_ocr_json_response = {"azure_ocr_pages_response": {}}
+        # for page_num, document in sorted_data_with_page_numbers:
+        #     azure_ocr_json_response['azure_ocr_pages_response'][str(page_num)] = document.as_dict()
 
-        create_subfolders(azure_ocr_json_response_path)
-        with open(azure_ocr_json_response_path, "w") as file:
-            file.write(json.dumps(azure_ocr_json_response, indent=2))
+        # create_subfolders(azure_ocr_json_response_path)
+        # with open(azure_ocr_json_response_path, "w") as file:
+        #     file.write(json.dumps(azure_ocr_json_response, indent=2))
+
+
 
         logger.info('2. OCR Completed')
         task["progress"].append(
@@ -127,6 +130,7 @@ async def process_pdf_document(pdf_path, task):
         print("*"*20, "2. Document OCR Completed")
         print("*"*20, "3. Document Extraction in Progress")
 
+        extracted_text, azure_ocr_json_response = get_text_from_pdf_with_doc_intelligence(pdf_path)
         
 
         
