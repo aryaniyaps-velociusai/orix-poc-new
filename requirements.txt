@@ -26,3 +26,6 @@ aioboto3==13.1.1
 fuzzywuzzy
 python-multipart
 azure-ai-documentintelligence==1.0.0b2
+azure-storage-blob
+aiofiles
+httpx==0.27.2
