@@ -10,9 +10,9 @@ env:
   APPNAME: orix-backend-poc-qa
   IMAGENAME: orix-backend
   TAG: poc-qa
-  AZURE_CONTAINER_REGISTRY: cmncontainerregistry
-  AZURE_CONTAINER_REGISTRY_URL: https://cmncontainerregistry.azurecr.io
-  AZURE_CONTAINER_REGISTRY_hostname: cmncontainerregistry.azurecr.io
+  AZURE_CONTAINER_REGISTRY: commonperfectercontainerregistry
+  AZURE_CONTAINER_REGISTRY_URL: https://commonperfectercontainerregistry.azurecr.io
+  AZURE_CONTAINER_REGISTRY_hostname: commonperfectercontainerregistry.azurecr.io
   RESOURCEGROUP: orix
   ACR_RESOURCE_GROUP: common-res-grp
   DOCKER_FILE: ./Dockerfile
