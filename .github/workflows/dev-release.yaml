@@ -7,12 +7,13 @@ on:
   workflow_dispatch:
 env:
   SOLUTION_FOLDER: ./
-  APPNAME: orix-poc-dev
-  IMAGENAME: orix-poc
+  APPNAME: orix-backend-poc-dev
+  IMAGENAME: orix-backend
+  TAG: poc-dev
   AZURE_CONTAINER_REGISTRY: cmncontainerregistry
   AZURE_CONTAINER_REGISTRY_URL: https://cmncontainerregistry.azurecr.io
   AZURE_CONTAINER_REGISTRY_hostname: cmncontainerregistry.azurecr.io
-  RESOURCEGROUP: orix-poc
+  RESOURCEGROUP: orix
   ACR_RESOURCE_GROUP: common-res-grp
   DOCKER_FILE: ./Dockerfile
 
@@ -63,7 +64,7 @@ jobs:
           context: ./
           file: Dockerfile
           push: true
-          tags: ${{env.AZURE_CONTAINER_REGISTRY_hostname}}/${{env.IMAGENAME}}:dev
+          tags: ${{env.AZURE_CONTAINER_REGISTRY_hostname}}/${{env.IMAGENAME}}:${{env.TAG}}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
           

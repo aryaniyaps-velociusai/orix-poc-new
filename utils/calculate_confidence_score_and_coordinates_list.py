@@ -83,8 +83,8 @@ def calculate_confidence_score_and_net_polygon_value(words, value, azure_ocr_out
     page_width = None
     page_height = None
     try:
-        if str(page_number) in azure_ocr_output["azure_ocr_pages_response"]:
-            azure_ocr_page = azure_ocr_output["azure_ocr_pages_response"][str(page_number)]["pages"][0]
+        if page_number <= len(azure_ocr_output["pages"]):
+            azure_ocr_page = azure_ocr_output["pages"][page_number-1]
             for word_index in range(len(azure_ocr_page["words"])-1):
                 if match_respective_words(words, value, azure_ocr_page, word_index, page_number):
                     total_confidence = 0
