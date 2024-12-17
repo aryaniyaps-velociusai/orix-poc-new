@@ -1,9 +1,10 @@
-from datetime import datetime
 import json
 import logging
 import os
+from datetime import datetime
 
-logger = logging.getLogger('orix-poc-logger')
+logger = logging.getLogger("orix-poc-logger")
+
 
 def is_mm_dd_yyyy(date_str):
     try:
@@ -11,7 +12,7 @@ def is_mm_dd_yyyy(date_str):
         return datetime.strftime(date_object, "%m/%d/%Y") == date_str
     except ValueError:
         return False
-   
+
 
 def get_filename_without_extension(file_path):
     # Get the base name from the file path
@@ -24,7 +25,7 @@ def get_filename_without_extension(file_path):
 def create_subfolders(file_path):
     # Get the directory path from the file path
     directory = os.path.dirname(file_path)
-    
+
     # Check if the directory exists
     if not os.path.exists(directory):
         # If it does not exist, create the directory and all intermediate directories

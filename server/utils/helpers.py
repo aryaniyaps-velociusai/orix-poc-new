@@ -1,21 +1,20 @@
 import logging
-import re
 import os
-import uuid
+import re
 import shutil
-import xlsxwriter
-from azure.identity import DefaultAzureCredential
-
+import uuid
 from datetime import datetime
-from PIL import Image
+
+import aiohttp
 import boto3
 import fitz
 import pandas as pd
-import aiohttp
-
+import xlsxwriter
+from azure.identity import DefaultAzureCredential
 from constants import Method
+from PIL import Image
 
-logger = logging.getLogger('orix-poc-logger')
+logger = logging.getLogger("orix-poc-logger")
 
 METHOD = Method()
 
@@ -32,15 +31,15 @@ async def api_call(method, url, headers, data=None):
                 try:
                     response = await resp.json()
                 except aiohttp.client_exceptions.ContentTypeError as e:
-                    logger.info(f'{msg}, {reason}, {e}')
+                    logger.info(f"{msg}, {reason}, {e}")
                 if status_code not in [200, 201, 202, 203]:
-                    logger.info(f'{await resp.text()}')
+                    logger.info(f"{await resp.text()}")
         if method == METHOD.DELETE:
             async with session.delete(url, headers=headers) as resp:
                 status_code = resp.status
                 reason = resp.reason
                 if status_code != 204:
-                    logger.info(f'{await resp.text()}')
+                    logger.info(f"{await resp.text()}")
         elif method == METHOD.POST:
             async with session.post(url, headers=headers, json=data) as resp:
                 status_code = resp.status
@@ -48,9 +47,9 @@ async def api_call(method, url, headers, data=None):
                 try:
                     response = await resp.json()
                 except aiohttp.client_exceptions.ContentTypeError as e:
-                    logger.info(f'{msg}, {reason}, {e}')
+                    logger.info(f"{msg}, {reason}, {e}")
                 if status_code not in [200, 201]:
-                    logger.info(f'{await resp.text()}')
+                    logger.info(f"{await resp.text()}")
         elif method == METHOD.PUT:
             async with session.put(url, headers=headers, data=data) as resp:
                 status_code = resp.status
@@ -58,9 +57,9 @@ async def api_call(method, url, headers, data=None):
                 try:
                     response = await resp.json()
                 except aiohttp.client_exceptions.ContentTypeError as e:
-                    logger.info(f'{msg}, {reason}, {e}')
+                    logger.info(f"{msg}, {reason}, {e}")
                 if status_code not in [200, 201]:
-                    logger.info(f'{await resp.text()}')
+                    logger.info(f"{await resp.text()}")
 
     return status_code, reason, response
 
@@ -147,7 +146,6 @@ def create_separator(text):
     """Create a separator line based on the longest line in the text."""
     max_length = max(len(line) for line in text.split("\n"))
     return "-" * max_length
-
 
 
 def parse_data_string(data_str):

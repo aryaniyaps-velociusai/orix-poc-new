@@ -35,10 +35,14 @@ class DefaultConfig:
     CONTAINER_ID = config("CONTAINER_ID")
     PARTITION_ENV = config("PARTITION_ENVIRONMENT_KEY")
 
-    ENVIRONMENT = config("ENV") # environment in which the script is running e.g. local, dev, qa, prod
+    ENVIRONMENT = config(
+        "ENV"
+    )  # environment in which the script is running e.g. local, dev, qa, prod
 
-    AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT_1 = config('AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT_1')
-    AZURE_DOCUMENT_INTELLIGENCE_KEY_1 = config('AZURE_DOCUMENT_INTELLIGENCE_KEY_1')
+    AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT_1 = config(
+        "AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT_1"
+    )
+    AZURE_DOCUMENT_INTELLIGENCE_KEY_1 = config("AZURE_DOCUMENT_INTELLIGENCE_KEY_1")
 
     MAX_PAGES_PROCESSED_PER_PDF = config("MAX_PAGES_PROCESSED_PER_PDF", default=40)
 

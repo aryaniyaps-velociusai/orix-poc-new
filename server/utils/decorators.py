@@ -2,7 +2,8 @@ import logging
 import time
 from functools import wraps
 
-logger = logging.getLogger('orix-poc-logger')
+logger = logging.getLogger("orix-poc-logger")
+
 
 def log_execution_time_async(func):
     @wraps(func)
@@ -11,10 +12,12 @@ def log_execution_time_async(func):
         result = await func(*args, **kwargs)
         end_time = time.time()
         execution_time = end_time - start_time
-        logger.info(f'''\n\t===>\tFunction '{func.__name__}' executed in {
-              execution_time:.4f} seconds\n''')
+        logger.info(f"""\n\t===>\tFunction '{func.__name__}' executed in {
+              execution_time:.4f} seconds\n""")
         return result
+
     return wrapper
+
 
 def log_execution_time(func):
     @wraps(func)
@@ -23,7 +26,8 @@ def log_execution_time(func):
         result = func(*args, **kwargs)
         end_time = time.time()
         execution_time = end_time - start_time
-        logger.info(f'''Function '{func.__name__}' executed in {
-              execution_time:.4f} seconds\n''')
+        logger.info(f"""Function '{func.__name__}' executed in {
+              execution_time:.4f} seconds\n""")
         return result
+
     return wrapper

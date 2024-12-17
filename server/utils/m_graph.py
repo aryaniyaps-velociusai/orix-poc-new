@@ -1,16 +1,18 @@
-import logging
-import re
-import os
 import base64
+import logging
+import os
+import re
 import urllib.parse
 
-from utils.helpers import api_call, get_token
 from constants import BROWSER_URL, DEBUG_FLAG, Method
+from utils.helpers import api_call, get_token
+
 # from config import DefaultConfig
 
 METHOD = Method()
 # CONFIG = DefaultConfig()
-logger = logging.getLogger('orix-poc-logger')
+logger = logging.getLogger("orix-poc-logger")
+
 
 class MGraphUtil:
     def __init__(self, link_extracted=None):
@@ -64,7 +66,7 @@ class MGraphUtil:
         graph_api_url = self.base_url + f"/shares/{encoded_url}/root/children"
         return drive_item_url, graph_api_url
 
-    async def get_drive_path(self, shareable_url, token = None):
+    async def get_drive_path(self, shareable_url, token=None):
         drive_item_url, _ = self.create_graph_api_link(shareable_url)
         access_token = get_token()
         if token is not None:
@@ -140,7 +142,6 @@ class MGraphUtil:
             logger.info(f"Error while copying the items: {reason}")
             return False
         return True
-
 
     def _change_to_email(self, underscored_words):
         words = underscored_words.split("_")
@@ -218,7 +219,9 @@ class MGraphUtil:
         )
         if status_code == 200:
             return True
-        logger.info(f"Failed to grant access. Status code: {status_code}, Response: {reason}")
+        logger.info(
+            f"Failed to grant access. Status code: {status_code}, Response: {reason}"
+        )
         return False
 
     async def create_folder_onedrive(self, base_write_url: str, directory_name: str):
@@ -273,7 +276,7 @@ class MGraphUtil:
         return True
 
     async def upload_to_onedrive(
-        self, driver_folder_url: str, subfolder_name: str , file_path: str, token = None
+        self, driver_folder_url: str, subfolder_name: str, file_path: str, token=None
     ):
         status = []
 
@@ -290,20 +293,17 @@ class MGraphUtil:
         filename, file_content = self.get_name_and_content(file_path)
 
         # filename_without_extension = ".".join(filename.split('.')[:-1])
-        
+
         excel_write_url = f"{driver_folder_url}/{subfolder_name}/{filename}:/content"
         status_code, reason, res_json = await api_call(
             METHOD.PUT, excel_write_url, headers=headers, data=file_content
         )
 
         if status_code in [200, 201, 202, 203]:
-            logger.debug(
-                f"'{filename}' generated."
-            )
+            logger.debug(f"'{filename}' generated.")
 
         else:
             logger.debug(f"{DEBUG_FLAG}:'{filename}' not generated. {reason}")
             return None
 
-        return res_json['webUrl']
-    
+        return res_json["webUrl"]

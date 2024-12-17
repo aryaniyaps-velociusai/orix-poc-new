@@ -17,10 +17,8 @@ def calculate_balance_sheet_total_assets(balance_sheet):
             "tenant_security_deposits",
             "prepaid_property_insurances",
             "other_prepaid_expenses",
-            "miscellaneous_current_assets"
+            "miscellaneous_current_assets",
         ]
-
-
 
         total_current_assets = 0
 
@@ -29,14 +27,13 @@ def calculate_balance_sheet_total_assets(balance_sheet):
         assets["total_current_assets"]["total"] = total_current_assets
         assets["total_current_assets"]["is_total_field"] = True
 
-
         total_reserves_and_deposits_subtotal_fields = [
             "real_estate_taxes_and_insurance_escrow",
             "reserve_for_replacement",
             "operating_deficit_reserve",
             "bond_escrow",
             "construction_escrow",
-            "miscellaneous_escrows"
+            "miscellaneous_escrows",
         ]
         total_reserves_and_deposits = 0
 
@@ -46,11 +43,10 @@ def calculate_balance_sheet_total_assets(balance_sheet):
         assets["total_reserves_and_deposits"]["total"] = total_reserves_and_deposits
         assets["total_reserves_and_deposits"]["is_total_field"] = True
 
-
         total_fixed_assets_subtotal_fields = [
             "land",
             "fixed_assets",
-            "accumulated_depreciation"
+            "accumulated_depreciation",
         ]
         total_fixed_assets = 0
 
@@ -59,22 +55,19 @@ def calculate_balance_sheet_total_assets(balance_sheet):
         assets["total_fixed_assets"]["total"] = total_fixed_assets
         assets["total_fixed_assets"]["is_total_field"] = True
 
-        total_other_assets_subtotal_fields = [
-            "other_assets"
-        ]
+        total_other_assets_subtotal_fields = ["other_assets"]
         total_other_assets = 0
 
         for field in total_other_assets_subtotal_fields:
             total_other_assets += assets[field]["total"]
         assets["total_other_assets"]["total"] = total_other_assets
         assets["total_other_assets"]["is_total_field"] = True
-        
 
         total_assets_subtotal_fields = [
             "total_current_assets",
             "total_reserves_and_deposits",
             "total_fixed_assets",
-            "total_other_assets"
+            "total_other_assets",
         ]
 
         total_assets = 0
@@ -86,9 +79,6 @@ def calculate_balance_sheet_total_assets(balance_sheet):
     except Exception as e:
         print(f"Error occured in: {calculate_balance_sheet_total_assets.__name__}")
         raise e
-
-
-
 
 
 # calculate_balance_sheet_total_liabilities
@@ -106,9 +96,8 @@ def calculate_balance_sheet_total_liabilities(balance_sheet):
             "accrued_interest_payable",
             "mortgage_notes_payable_current_portion",
             "construction_payable",
-            "miscellaneous_current_liabilities"
+            "miscellaneous_current_liabilities",
         ]
-
 
         total_current_liabilities = 0
 
@@ -129,21 +118,22 @@ def calculate_balance_sheet_total_liabilities(balance_sheet):
             "soft_debt_payable",
             "accrued_soft_debt_interest",
             "ilp_loans",
-            "other_long_term_liabilities"
+            "other_long_term_liabilities",
         ]
         total_long_term_liabilities = 0
 
         for field in total_long_term_liabilities_subtotal_fields:
             total_long_term_liabilities += liabilities[field]["total"]
 
-        liabilities["total_long_term_liabilities"]["total"] = total_long_term_liabilities
+        liabilities["total_long_term_liabilities"]["total"] = (
+            total_long_term_liabilities
+        )
         liabilities["total_long_term_liabilities"]["is_total_field"] = True
-
 
         total_owners_equity_subtotal_fields = [
             "limited_partners_equity_deficiency",
             "other_partners_equity_deficiency",
-            "miscellaneous_equity_deficiency"
+            "miscellaneous_equity_deficiency",
         ]
 
         total_owners_equity = 0
@@ -152,18 +142,19 @@ def calculate_balance_sheet_total_liabilities(balance_sheet):
             total_owners_equity += liabilities[field]["total"]
         liabilities["total_owners_equity"]["total"] = total_owners_equity
         liabilities["total_owners_equity"]["is_total_field"] = True
-        
 
         total_liabilities_and_equity_subtotal_fields = [
             "total_current_liabilities",
             "total_long_term_liabilities",
-            "total_owners_equity"
+            "total_owners_equity",
         ]
         total_liabilities_and_equity = 0
 
         for field in total_liabilities_and_equity_subtotal_fields:
             total_liabilities_and_equity += liabilities[field]["total"]
-        liabilities["total_liabilities_and_equity"]["total"] = total_liabilities_and_equity
+        liabilities["total_liabilities_and_equity"]["total"] = (
+            total_liabilities_and_equity
+        )
         liabilities["total_liabilities_and_equity"]["is_total_field"] = True
     except Exception as e:
         print(f"Error occured in: {calculate_balance_sheet_total_liabilities.__name__}")
@@ -175,7 +166,6 @@ def calculate_balance_sheet_total_liabilities(balance_sheet):
 # INCOME STATEMENT
 # ############################
 # ############################
-
 
 
 def calculate_income_statement_total_income(income_statement):
@@ -195,11 +185,7 @@ def calculate_income_statement_total_income(income_statement):
         revenue_income["gross_potential_rent"]["total"] = gross_potential_rent
         revenue_income["gross_potential_rent"]["is_total_field"] = True
 
-
-        total_vacancy_subtotal_fields = [
-            "vacancy_apartments",
-            "vacancy_commercial"
-        ]
+        total_vacancy_subtotal_fields = ["vacancy_apartments", "vacancy_commercial"]
 
         total_vacancy = 0
 
@@ -213,7 +199,7 @@ def calculate_income_statement_total_income(income_statement):
             "gross_potential_rent",
             "total_vacancy",
             "bad_debt",
-            "concessions"
+            "concessions",
         ]
         net_rental_revenue = 0
 
@@ -222,13 +208,12 @@ def calculate_income_statement_total_income(income_statement):
 
         revenue_income["net_rental_revenue"]["total"] = net_rental_revenue
         revenue_income["net_rental_revenue"]["is_total_field"] = True
-        
 
         total_other_revenue_subtotal_fields = [
             "laundry",
             "parking",
             "interest_income",
-            "miscellaneous_revenue"
+            "miscellaneous_revenue",
         ]
         total_other_revenue = 0
 
@@ -237,11 +222,8 @@ def calculate_income_statement_total_income(income_statement):
 
         revenue_income["total_other_revenue"]["total"] = total_other_revenue
         revenue_income["total_other_revenue"]["is_total_field"] = True
-        
-        net_revenue_subtotal_fields = [
-            "net_rental_revenue",
-            "total_other_revenue"
-        ]
+
+        net_revenue_subtotal_fields = ["net_rental_revenue", "total_other_revenue"]
         net_revenue = 0
 
         for field in net_revenue_subtotal_fields:
@@ -252,7 +234,6 @@ def calculate_income_statement_total_income(income_statement):
     except Exception as e:
         print(f"Error occured in: {calculate_income_statement_total_income.__name__}")
         raise e
-
 
 
 def calculate_income_statement_total_expense(income_statement):
@@ -269,15 +250,16 @@ def calculate_income_statement_total_expense(income_statement):
 
         for field in total_administrative_expenses_subtotal_fields:
             total_administrative_expenses += expenses[field]["total"]
-        expenses["total_administrative_expenses"]["total"] = total_administrative_expenses
+        expenses["total_administrative_expenses"]["total"] = (
+            total_administrative_expenses
+        )
         expenses["total_administrative_expenses"]["is_total_field"] = True
-
 
         total_utilities_expense_subtotal_fields = [
             "water_sewer",
-            "other_utilities_expense"
+            "other_utilities_expense",
         ]
-        
+
         total_utilities_expense = 0
 
         for field in total_utilities_expense_subtotal_fields:
@@ -285,13 +267,12 @@ def calculate_income_statement_total_expense(income_statement):
         expenses["total_utilities_expense"]["total"] = total_utilities_expense
         expenses["total_utilities_expense"]["is_total_field"] = True
 
-
         total_maintenance_expenses_subtotal_fields = [
             "maintenance_payroll",
             "trash_removal",
-            "maintenance_expenses"
+            "maintenance_expenses",
         ]
-        
+
         total_maintenance_expenses = 0
 
         for field in total_maintenance_expenses_subtotal_fields:
@@ -299,11 +280,9 @@ def calculate_income_statement_total_expense(income_statement):
         expenses["total_maintenance_expenses"]["total"] = total_maintenance_expenses
         expenses["total_maintenance_expenses"]["is_total_field"] = True
 
-
-
         total_taxes_and_insurance_subtotal_fields = [
             "real_estate_taxes",
-            "property_liability_insurance"
+            "property_liability_insurance",
         ]
         total_taxes_and_insurance = 0
 
@@ -316,9 +295,9 @@ def calculate_income_statement_total_expense(income_statement):
             "total_administrative_expenses",
             "total_utilities_expense",
             "total_maintenance_expenses",
-            "total_taxes_and_insurance"
+            "total_taxes_and_insurance",
         ]
-        
+
         total_operating_expenses = 0
 
         for field in total_operating_expenses_subtotal_fields:
@@ -326,37 +305,39 @@ def calculate_income_statement_total_expense(income_statement):
         expenses["total_operating_expenses"]["total"] = total_operating_expenses
         expenses["total_operating_expenses"]["is_total_field"] = True
 
-
-        net_operating_income_subtotal_fields = [ # net_revenue - total_operating_expenses
-            "net_revenue", # revenue field, change approach for calculating this field
+        net_operating_income_subtotal_fields = [  # net_revenue - total_operating_expenses
+            "net_revenue",  # revenue field, change approach for calculating this field
             "total_operating_expenses",
         ]
 
-        net_operating_income = income_statement["revenue_income"]["net_revenue"]["total"] - expenses["total_operating_expenses"]["total"]
+        net_operating_income = (
+            income_statement["revenue_income"]["net_revenue"]["total"]
+            - expenses["total_operating_expenses"]["total"]
+        )
 
         expenses["net_operating_income"]["total"] = net_operating_income
         expenses["net_operating_income"]["is_total_field"] = True
-
 
         total_interest_on_mortgage_notes_subtotal_fields = [
             "interest_expense_hard_debt",
             "interest_expense_construction",
             "interest_expense_soft_debt",
             "interest_on_notes",
-            "amortization_of_loan_issuance_costs"
+            "amortization_of_loan_issuance_costs",
         ]
         total_interest_on_mortgage_notes = 0
 
         for field in total_interest_on_mortgage_notes_subtotal_fields:
             total_interest_on_mortgage_notes += expenses[field]["total"]
-        expenses["total_interest_on_mortgage_notes"]["total"] = total_interest_on_mortgage_notes
+        expenses["total_interest_on_mortgage_notes"]["total"] = (
+            total_interest_on_mortgage_notes
+        )
         expenses["total_interest_on_mortgage_notes"]["is_total_field"] = True
-
 
         total_financial_expenses_subtotal_fields = [
             "loan_fees",
             "mortgage_insurance_premium",
-            "miscellaneous_financial_expenses"
+            "miscellaneous_financial_expenses",
         ]
         total_financial_expenses = 0
 
@@ -364,8 +345,8 @@ def calculate_income_statement_total_expense(income_statement):
             total_financial_expenses += expenses[field]["total"]
         expenses["total_financial_expenses"]["total"] = total_financial_expenses
         expenses["total_financial_expenses"]["is_total_field"] = True
-        
-        net_profit_loss_subtotal_fields = [ # net_operating_income - below
+
+        net_profit_loss_subtotal_fields = [  # net_operating_income - below
             "total_interest_on_mortgage_notes",
             "total_financial_expenses",
             "other_non_cash_expenses_income",
@@ -376,7 +357,7 @@ def calculate_income_statement_total_expense(income_statement):
             "capital_repairs_not_capitalized",
             "non_recurring_cash_expense",
             "non_recurring_cash_income",
-            "impairment"
+            "impairment",
         ]
 
         net_profit_loss = 0
@@ -389,16 +370,17 @@ def calculate_income_statement_total_expense(income_statement):
 
         total_mortgage_principal_payments_subtotal_fields = [
             "principal_payments_hard_debt",
-            "principal_payments_soft_debt"
+            "principal_payments_soft_debt",
         ]
 
         total_mortgage_principal_payments = 0
 
         for field in total_mortgage_principal_payments_subtotal_fields:
             total_mortgage_principal_payments += expenses[field]["total"]
-        expenses["total_mortgage_principal_payments"]["total"] = total_mortgage_principal_payments
+        expenses["total_mortgage_principal_payments"]["total"] = (
+            total_mortgage_principal_payments
+        )
         expenses["total_mortgage_principal_payments"]["is_total_field"] = True
-
 
         depreciation_amort_other_non_cash_subtotal_fields = [
             "other_non_cash_expenses_income",
@@ -409,14 +391,16 @@ def calculate_income_statement_total_expense(income_statement):
             "capital_repairs_not_capitalized",
             "non_recurring_cash_expense",
             "non_recurring_cash_income",
-            "impairment"
+            "impairment",
         ]
 
         depreciation_amort_other_non_cash = 0
 
         for field in depreciation_amort_other_non_cash_subtotal_fields:
             depreciation_amort_other_non_cash += expenses[field]["total"]
-        expenses["depreciation_amort_other_non_cash"]["total"] = depreciation_amort_other_non_cash
+        expenses["depreciation_amort_other_non_cash"]["total"] = (
+            depreciation_amort_other_non_cash
+        )
         expenses["depreciation_amort_other_non_cash"]["is_total_field"] = True
 
         total_operating_cash_flow_subtotal_fields = [
@@ -429,9 +413,8 @@ def calculate_income_statement_total_expense(income_statement):
             "accrued_partnership_fees",
             "capital_improvements_not_expensed",
             "preferred_equity_distribution",
-            "other_adjustments"
+            "other_adjustments",
         ]
-
 
         total_operating_cash_flow = 0
 
@@ -440,12 +423,11 @@ def calculate_income_statement_total_expense(income_statement):
         expenses["total_operating_cash_flow"]["total"] = total_operating_cash_flow
         expenses["total_operating_cash_flow"]["is_total_field"] = True
 
-
-        total_net_cash_flow_subtotal_fields = [ # total_operating_cash_flow - below
+        total_net_cash_flow_subtotal_fields = [  # total_operating_cash_flow - below
             "capital_contributions",
             "deficit_funding",
             "ilp_fund_advances",
-            "other_cash_flow_adjustments"
+            "other_cash_flow_adjustments",
         ]
 
         total_net_cash_flow = 0
@@ -458,7 +440,6 @@ def calculate_income_statement_total_expense(income_statement):
     except Exception as e:
         print(f"Error occured in: {calculate_income_statement_total_expense.__name__}")
         raise e
-    
 
 
 def calculate_dict_total(dict_obj):
@@ -467,11 +448,17 @@ def calculate_dict_total(dict_obj):
             sub_dict["total"] = 0
 
             if isinstance(sub_dict, dict):
-                sub_dict_field_total = sum([float(str(field["value"]).replace(',', '')) for field in sub_dict["fields"]])
+                sub_dict_field_total = sum(
+                    [
+                        float(str(field["value"]).replace(",", ""))
+                        for field in sub_dict["fields"]
+                    ]
+                )
                 sub_dict["total"] = round(sub_dict_field_total, 2)
     except Exception as e:
         print(f"Error occured in: {calculate_dict_total.__name__}")
         raise e
+
 
 def calculate_field_total_values(new_json_response):
     try:
@@ -492,9 +479,6 @@ def calculate_field_total_values(new_json_response):
         print(f"Error occured in: {calculate_field_total_values.__name__}")
         raise e
 
-    
-
-    
 
 def calculate_totals(json_response):
     try:
@@ -511,4 +495,3 @@ def calculate_totals(json_response):
     except Exception as e:
         print(f"Error occured in: {calculate_totals.__name__}")
         raise e
-

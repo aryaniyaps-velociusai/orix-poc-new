@@ -1,5 +1,16 @@
 DEBUG_FLAG = "[DEBUG]"
-ACCEPTABLE_FILES = [".doc", ".docx", ".pdf", ".tif",".tiff",".xlsx",".xls",".png",".jpeg",".jpg"]
+ACCEPTABLE_FILES = [
+    ".doc",
+    ".docx",
+    ".pdf",
+    ".tif",
+    ".tiff",
+    ".xlsx",
+    ".xls",
+    ".png",
+    ".jpeg",
+    ".jpg",
+]
 BROWSER_URL = "browser_url"
 
 
