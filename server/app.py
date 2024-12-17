@@ -1,20 +1,21 @@
+import os
+import time
+from uuid import uuid4
+
 from fastapi import (
+    BackgroundTasks,
     FastAPI,
     HTTPException,
-    UploadFile,
     Request,
-    BackgroundTasks,
+    UploadFile,
     status,
 )
-from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
-import os
-from uuid import uuid4
+from fastapi.responses import HTMLResponse, JSONResponse
 from process_pdf_document import process_pdf_document
-from utils.s3_upload import upload_to_s3_generate_presigned_download_url
-from utils.json_to_xlsx import document_json_to_xlsx
 from utils.cosmos_db_op import create_record, get_item_by_id, update_item
-import time
+from utils.json_to_xlsx import document_json_to_xlsx
+from utils.s3_upload import upload_to_s3_generate_presigned_download_url
 
 app = FastAPI(title="Orix Operating Statement POC API", version="0.1.2")
 
@@ -29,7 +30,6 @@ app.add_middleware(
 
 def save_file(file: UploadFile):
     try:
-
         if not os.path.exists("files"):
             os.makedirs("files")
         file_path = os.path.join("files", file.filename)

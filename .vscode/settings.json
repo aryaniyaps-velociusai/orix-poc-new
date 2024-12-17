@@ -1,0 +1,47 @@
+
+{
+    "[python]": {
+      "editor.defaultFormatter": "charliermarsh.ruff"
+    },
+    "editor.defaultFormatter": "biomejs.biome",
+    "ruff.nativeServer": true,
+    "python.languageServer": "Pylance",
+    "python.analysis.typeCheckingMode": "basic",
+    "python.defaultInterpreterPath": "${workspaceFolder}/server/.venv",
+    "python.testing.pytestEnabled": true,
+    "python.testing.pytestArgs": [""],
+    "python.terminal.activateEnvironment": false,
+    "python.analysis.ignore": ["*"],
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    },
+    "terminal.integrated.env.linux": {
+      "PYTHONPATH": "${workspaceFolder}/server"
+    },
+    "terminal.integrated.env.windows": {
+      "PYTHONPATH": "${workspaceFolder}/server"
+    },
+    "terminal.integrated.defaultProfile.linux": "tmux-shell",
+    "terminal.integrated.profiles.linux": {
+      "bash": {
+        "path": "bash",
+        "icon": "terminal-bash"
+      },
+      "zsh": {
+        "path": "zsh"
+      },
+      "fish": {
+        "path": "fish"
+      },
+      "tmux-shell": {
+        "path": "tmux",
+        "args": ["new-session", "-A", "-s", "vscode:${workspaceFolder}"]
+      },
+      "pwsh": {
+        "path": "pwsh",
+        "icon": "terminal-powershell"
+      }
+    }
+  }
+  
