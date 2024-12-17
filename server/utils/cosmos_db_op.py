@@ -1,5 +1,3 @@
-import asyncio
-
 import aiosqlite  # Import the async SQLite library
 from config import DefaultConfig
 
