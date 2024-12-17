@@ -7,7 +7,7 @@
     "ruff.nativeServer": true,
     "python.languageServer": "Pylance",
     "python.analysis.typeCheckingMode": "basic",
-    "python.defaultInterpreterPath": "${workspaceFolder}/server/.venv",
+    "python.defaultInterpreterPath": "${workspaceFolder}/benchmarks/.venv",
     "python.testing.pytestEnabled": true,
     "python.testing.pytestArgs": [""],
     "python.terminal.activateEnvironment": false,
@@ -17,10 +17,10 @@
       "source.organizeImports": "explicit"
     },
     "terminal.integrated.env.linux": {
-      "PYTHONPATH": "${workspaceFolder}/server"
+      "PYTHONPATH": "${workspaceFolder}/benchmarks"
     },
     "terminal.integrated.env.windows": {
-      "PYTHONPATH": "${workspaceFolder}/server"
+      "PYTHONPATH": "${workspaceFolder}/benchmarks"
     },
     "terminal.integrated.defaultProfile.linux": "tmux-shell",
     "terminal.integrated.profiles.linux": {

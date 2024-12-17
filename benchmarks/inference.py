@@ -2,7 +2,7 @@ import logging
 
 from config import settings
 from dotenv import load_dotenv
-from instrumentation import log_execution_time, log_execution_time_async
+from instrumentation import log_execution_time_async
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 from langchain_azure_ai import AzureAIChatCompletionsModel
