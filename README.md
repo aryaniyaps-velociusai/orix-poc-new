@@ -12,13 +12,10 @@ Run the following command to install dependencies:
 uv sync --python 3.12
 ```
 
+Create a `.env` file in the root directory, following the [reference template](./.env.example).
 
 
 ## How to run
-   ```shell
-   python3 app.py
-   ```
-   or
-   ```shell
-   uvicorn app:app --reload
-   ```
+```shell
+uv run uvicorn app:app --reload
+```
