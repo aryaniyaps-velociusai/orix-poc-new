@@ -1,6 +1,5 @@
-from azure.cosmos.aio import CosmosClient
-import azure.cosmos.exceptions as exceptions
-from azure.identity import DefaultAzureCredential
+import asyncio
+import sqlite3
 
 from config import DefaultConfig
 
@@ -10,44 +9,38 @@ CONFIG = DefaultConfig()
 def get_jobs_obj(data):
     data["environment"] = CONFIG.PARTITION_ENV
     return data
-    # return {
-    #     "id": data["job_id"],
-    #     "job_date": data["job_date"],
-    #     "loantransfer_name": data["loantransfer_name"],
-    #     "user": data["user"],
-    #     "loantransfer_staging_info": data["loantransfer_staging_info"],
-    #     "report_location_info": data["report_location_info"],
-    #     "status": data["status"],
-    #     "environment": CONFIG.ENV,
-    # }
-
-
-# 'CosmosClient' object does not support the context manager protocol
 
 
 async def create_record(data):
     try:
-        # if CONFIG.ENVIRONMENT == "local":
-        client = CosmosClient(CONFIG.DATABASE_URI, credential=CONFIG.KEY)
-        # else:
-        #     credential = DefaultAzureCredential()
-        #     client = CosmosClient(CONFIG.DATABASE_URI, credential=credential)
+        conn = sqlite3.connect(
+            CONFIG.DATABASE_URI
+        )  # SQLite connection (assuming the database is a file)
+        cursor = conn.cursor()
 
-        print('client ok')
-
-        database = client.get_database_client(CONFIG.DATABASE_ID)
-
-        print(database)
-        container = database.get_container_client(CONFIG.CONTAINER_ID)
-        print(container.database_link)
-        print(container.container_link)
         item = get_jobs_obj(data)
+        # Assuming there's a table named 'jobs' in SQLite with the relevant columns
+        cursor.execute(
+            """
+            INSERT INTO jobs (job_id, job_date, loantransfer_name, user, loantransfer_staging_info, report_location_info, status, environment)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+            (
+                item["job_id"],
+                item["job_date"],
+                item["loantransfer_name"],
+                item["user"],
+                item["loantransfer_staging_info"],
+                item["report_location_info"],
+                item["status"],
+                item["environment"],
+            ),
+        )
 
-        
-
-        res = await container.create_item(item)
-        await client.close()
-        return res["id"]
+        conn.commit()
+        job_id = cursor.lastrowid  # SQLite provides the last inserted row ID
+        conn.close()
+        return job_id
     except Exception as e:
         print("Exception while creating a record", e)
     return None
@@ -56,48 +49,40 @@ async def create_record(data):
 async def get_records_with_status(status):
     records = []
     try:
-        # if CONFIG.ENVIRONMENT == "local":
-        client = CosmosClient(CONFIG.DATABASE_URI, credential=CONFIG.KEY)
-        # else:
-        #     credential = DefaultAzureCredential()
-        #     client = CosmosClient(CONFIG.DATABASE_URI, credential=credential)
+        conn = sqlite3.connect(CONFIG.DATABASE_URI)
+        cursor = conn.cursor()
 
-        database = client.get_database_client(CONFIG.DATABASE_ID)
-        container = database.get_container_client(CONFIG.CONTAINER_ID)
+        query = """
+            SELECT * FROM jobs WHERE status = ? AND environment = ?
+        """
+        cursor.execute(query, (status, CONFIG.PARTITION_ENV))
+        records = cursor.fetchall()
 
-        query = f"SELECT * FROM {CONFIG.CONTAINER_ID} dj WHERE dj.status='{status}' and dj.environment='{CONFIG.PARTITION_ENV}'"
-
-        results = container.query_items(query=query)
-
-        async for item in results:
-            records.append(item)
-
+        conn.close()
     except Exception as e:
-        print("Exception while creating a record", e)
-    finally:
-        await client.close()
+        print("Exception while fetching records", e)
+
     return records
 
 
 async def get_item_by_id(job_id):
     try:
-        # if CONFIG.ENVIRONMENT == "local":
-        client = CosmosClient(CONFIG.DATABASE_URI, credential=CONFIG.KEY)
-        # else:
-        #     credential = DefaultAzureCredential()
-        #     client = CosmosClient(CONFIG.DATABASE_URI, credential=credential)
+        conn = sqlite3.connect(CONFIG.DATABASE_URI)
+        cursor = conn.cursor()
 
-        database = client.get_database_client(CONFIG.DATABASE_ID)
-        container = database.get_container_client(CONFIG.CONTAINER_ID)
+        query = """
+            SELECT * FROM jobs WHERE job_id = ? AND environment = ?
+        """
+        cursor.execute(query, (job_id, CONFIG.PARTITION_ENV))
+        item = cursor.fetchone()  # This will return the first matched row or None
 
-        try:
-            item = await container.read_item(job_id, partition_key=CONFIG.PARTITION_ENV)
-            return item
-        except exceptions.CosmosResourceNotFoundError as e:
-            print(e.reason)
+        conn.close()
+
+        if item:
+            # Assuming the table has columns matching the dict format
+            return dict(zip([column[0] for column in cursor.description], item))
+        else:
             return -1
-        finally:
-            await client.close()
     except Exception as e:
         print("Exception while getting a record", e)
     return None
@@ -105,28 +90,34 @@ async def get_item_by_id(job_id):
 
 async def update_item(item):
     try:
-        # if CONFIG.ENVIRONMENT == "local":
-        client = CosmosClient(CONFIG.DATABASE_URI, credential=CONFIG.KEY)
-        # else:
-        #     credential = DefaultAzureCredential()
-        #     client = CosmosClient(CONFIG.DATABASE_URI, credential=credential)
+        conn = sqlite3.connect(CONFIG.DATABASE_URI)
+        cursor = conn.cursor()
 
-        database = client.get_database_client(CONFIG.DATABASE_ID)
-        container = database.get_container_client(CONFIG.CONTAINER_ID)
+        # Assuming 'job_id' is the unique identifier for the job
+        query = """
+            UPDATE jobs
+            SET job_date = ?, loantransfer_name = ?, user = ?, loantransfer_staging_info = ?, 
+                report_location_info = ?, status = ?, environment = ?
+            WHERE job_id = ? AND environment = ?
+        """
+        cursor.execute(
+            query,
+            (
+                item["job_date"],
+                item["loantransfer_name"],
+                item["user"],
+                item["loantransfer_staging_info"],
+                item["report_location_info"],
+                item["status"],
+                item["environment"],
+                item["job_id"],
+                item["environment"],
+            ),
+        )
 
-        try:
-            # response = await container.upsert_item(item)
-            response = await container.replace_item(item=item, body=item)
-            return response
-
-        except Exception as e:
-            print("Error while updating the item", item)
-            print(e)
-            raise
-            return -1
-        finally:
-            await client.close()
-
+        conn.commit()
+        conn.close()
+        return item
     except Exception as e:
         print("Exception in update_item", e)
     return None
