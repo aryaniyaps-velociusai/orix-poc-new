@@ -590,7 +590,7 @@ income_statement_response_format = {
 }
 
 
-balance_sheet_prompt = f"""
+balance_sheet_prompt = """
         Please process the extracted text for "Balance Sheet" for a property provided between triple backticks, ensuring below guidelines are followed strictly:
             - ** Please Extract field values for Chart of Accounts (CoA) as per the guidelines mentioned for Balance Sheet.
             - ** Your task is to map all fields from extracted text to any Chart of Accounts that is most similar or most related match
