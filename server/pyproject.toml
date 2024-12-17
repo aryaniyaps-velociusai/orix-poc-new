@@ -36,4 +36,5 @@ dependencies = [
     "streamlit==1.32.2",
     "uvicorn[standard]>=0.34.0",
     "xlsxwriter==3.2.0",
+    "aiosqlite>=0.20.0",
 ]
