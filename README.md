@@ -1,19 +1,16 @@
 # Orix POC (New)
 
-## Setup & Installation
 
-1. Create python virtual environment
-   ```shell
-   python3 -m venv venv
-   ```
-2. Activate python virtual environment
-   ```shell
-   source venv/bin/activate
-   ```
-3. Install python dependencies from `requirements.txt` file
-   ```shell
-   pip install -r requirements.txt
-   ```
+## Prerequisites
+- Python 3.12
+- UV Package Manager
+
+## Setup & Installation
+Run the following command to install dependencies:
+
+```bash
+uv sync --python 3.12
+```
 
 
 

@@ -34,6 +34,6 @@ dependencies = [
     "streamlit-pdf-reader>=0.0.5",
     "streamlit-pdf-viewer>=0.0.19",
     "streamlit==1.32.2",
-    "uvicorn>=0.34.0",
+    "uvicorn[standard]>=0.34.0",
     "xlsxwriter==3.2.0",
 ]

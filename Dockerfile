@@ -1,6 +1,9 @@
-FROM python:3.11-slim
+FROM python:3.12-slim
 
 EXPOSE 8501
+
+# install UV
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -14,10 +17,8 @@ WORKDIR /app
 # Copy app files to the container
 COPY . /app
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
-RUN pip install fastapi uvicorn
+# Install dependencies
+RUN uv sync --frozen
 
 # Set the environment variable for Python unbuffered mode (this will allow you to see logs in real-time)
 ENV PYTHONUNBUFFERED=1
